@@ -1,0 +1,1 @@
+CREATE DATABASE picker_service;
