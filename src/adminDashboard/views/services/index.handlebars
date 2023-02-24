@@ -1,0 +1,77 @@
+<form action="/dashboard/services" method="get">
+    <div class="input-group">
+        <select class="form-select" id="inputGroupSelect04" aria-label="Example select with button addon" name="isAdditional">
+            <option 
+                 {{#if isAdditional}}
+                    selected
+                {{/if}}
+                value="true">اضافية</option>
+            <option value="false"
+                {{#if isAdditional}}
+                    
+                {{else}}
+                    selected
+                {{/if}}
+                >اساسية</option>
+        </select>
+        <button class="btn btn-primary" type="submit">فلتر حسب نوغ الخدمة</button>
+    </div>
+</form>
+
+<h3 class="text-center mt-5 mb-3">
+    {{#if isAdditional }}
+        الخدمات الاضافية
+    {{else}}
+        الخدمات
+    {{/if}}
+</h3>
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">الاسم</th>
+            <th scope="col">السعر</th>
+            <th scope="col">الصورة</th>
+            <th scope="col">النوع</th>
+            <th scope="col">عدد الحجوازات</th>
+            <th scope="col">تعديل</th>
+            
+        </tr>
+        </thead>
+        <tbody>
+        {{#each services }}
+            <tr>
+                <td class="py-3">
+                    <a href="/dashboard/services/{{this.dataValues.id}}" class="text-decoration-none text-primary">{{this.dataValues.name}}</a>
+                </td>
+                <td class="py-3">{{this.dataValues.price}}</td>
+                <td>
+                    <img src={{this.dataValues.image}} alt={{this.dataValues.name}} style="width: 60px; height: 60px"> 
+                </td>
+                <td class="py-3">
+                    {{#if this.dataValues.isAdditional}}
+                        اضافية
+                    {{else}}
+                        اساسية
+                    {{/if}}
+                </td>
+                <td class="py-3">{{this.dataValues.numberOfReservation}}</td>
+                <td class="py-3">
+                    <a rel="stylesheet" href="/dashboard/services/{{this.dataValues.id}}/edit" class="btn btn-outline-primary">تعديل</a>
+                </td>
+            </tr>
+        {{/each}}
+      <!-- Add more rows as needed -->
+      
+        </tbody>
+    </table>
+{{#if services.length }}
+            {{else}}
+              <p class="alert alert-danger">لا توجد خدمات مضافة</p>        
+            {{/if}}
+</div>
+
+
+<div class="text-center mt-3">
+    <a class="btn btn-primary" href="/dashboard/services/create">اضافة خدمة جديدة</a>
+</div>

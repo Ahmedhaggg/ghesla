@@ -1,0 +1,16 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+html {
+    direction: rtl;
+}
+
+.login-page {
+    height: 100vh;
+}
+
+/* .login-page input::placeholder {
+    direction: ltr;
+} */

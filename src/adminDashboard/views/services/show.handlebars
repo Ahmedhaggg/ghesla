@@ -1,0 +1,102 @@
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-6">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col">
+                            <p>الاسم</p>
+                        </div>
+                        <div class="col">
+                            <p class="text-center">{{service.dataValues.name}}</p>
+                        </div>
+                    </div>
+                </li>
+                 <li class="list-group-item">
+                    <div class="row">
+                        <div class="col">
+                            <p>السعر</p>
+                        </div>
+                        <div class="col">
+                            <p class="text-center">{{service.dataValues.price}}</p>
+                        </div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col">
+                            <p>عدد الحجوازات</p>
+                        </div>
+                        <div class="col">
+                            <p class="text-center">{{service.dataValues.numberOfReservation}}</p>
+                        </div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col">
+                            <p>الوصف</p>
+                        </div>
+                        <div class="col">
+                            <p class="text-center">{{service.dataValues.description}}</p>
+                        </div>
+                    </div>
+                </li>
+            </ul> 
+        </div>
+        <div class="col-md-6 text-center">
+            <img src="{{service.dataValues.image}}" alt="Product Image" class="img-fluid">
+        </div>
+    </div>
+    <div>
+        {{#if service.servicesDiscount.dataValues}}
+                <div class="d-flex justify-content-center mt-4 mb-3">
+                    <div class="col">
+                        <h5>الخصم</h5>
+                    </div>
+                    <div class="col">
+                        {{!-- delete discount --}}
+                        <form action="/dashboard/services/{{service.dataValues.id}}/discount/{{service.servicesDiscount.dataValues.id}}?_method=DELETE" method="post">
+                            <input type="hidden" name="_method" value="DELETE">
+                            {{#if deleteDiscountError}}
+                                <p class="alert alert-danger">{{deleteDiscountError}}</p>                        
+                            {{/if}}
+                            <button type="submit" class="btn btn-danger">حذف الخصم</button>
+                        </form>
+                    </div>
+                </div>
+                {{!-- update discount --}}
+                <form action="/dashboard/services/{{service.dataValues.id}}/discount/{{service.servicesDiscount.dataValues.id}}?_method=PUT" method="post">
+                        <input type="hidden" name="_method" value="PUT">
+                    <div class="mb-3">
+                        <input type="datetime-local" class="form-control" id="discountCode" name="expirationAt" placeholder="انتهاء الخصم" 
+                            {{#if lastDiscountValues.discount.expirationAt}}
+                                value="{{#toLocalDateTime lastDiscountValues.discount.expirationAt}}{{/toLocalDateTime}}"
+                            {{else}}
+                                value="{{#toLocalDateTime service.servicesDiscount.dataValues.expirationAt}}{{/toLocalDateTime}}"
+                            {{/if}}>
+                    </div>
+                    <div class="mb-3">
+                        <input type="number" class="form-control" id="discountCode" name="percentage" placeholder="نسبة الخصم"
+                            value="{{#or lastDiscountValues.discount.percentage service.servicesDiscount.dataValues.percentage }}{{/or}}">
+                    </div>
+                    {{#if updateDiscountError}}
+                        <p class="alert alert-danger">{{updateDiscountError}}</p>                        
+                    {{/if}}
+                    <button type="submit" class="btn btn-primary">تعديل الخصم</button>
+                </form>
+            {{else}}
+                <h5 class="text-center mt-4 mb-3">اضافة الخصم</h5>
+                {{!-- create discount --}}
+                <form action="/dashboard/services/{{service.dataValues.id}}/discount/store" method="post">
+                    <div class="mb-3">
+                        <input type="datetime-local" class="form-control" id="discountCode" name="expirationAt" placeholder="انتهاء الخصم">
+                    </div>
+                    <div class="mb-3">
+                        <input type="number" class="form-control" id="discountCode" name="percentage" placeholder="نسبة الخصم">
+                    </div>
+                    <button type="submit" class="btn btn-primary">اضافة خصم</button>
+                </form>
+            {{/if}}
+    </div>
+</div>
