@@ -13,7 +13,7 @@ exports.show = async (req, res, next) => {
     let { id } = req.params;
 
     let picker = await pickerService.findOne({ id });
-    console.log("picker, ", picker)
+    
     if (!picker)
         return res.redirect("/dashboard/404")
     

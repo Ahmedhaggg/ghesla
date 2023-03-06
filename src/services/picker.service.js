@@ -1,7 +1,7 @@
 const { Op } = require("sequelize");
 const { RESERVATION_PENDING } = require("../config/constants");
 const { db } = require("../config/database");
-let { Picker, Reservation, WorkDay, WorkHour } = require("../models");
+let { Picker, Reservation, WorkDay, WorkHour, ReservationStatus } = require("../models");
 let FactoryService = require("./factory.service");
 
 exports.create = async (pickerData, startWorkTime) => {
@@ -42,8 +42,15 @@ exports.findAll = async () => await Picker.findAll({
 // )
 
 exports.findOne = FactoryService.findOne(Picker, 
-    { exclude: ["password", "image", "email"] },
-    null
+    { exclude: ["password", "email"] },
+    {
+        model: Reservation,
+        attributes: { include: ["id", "date", "amount"] },
+        include: {
+            model: ReservationStatus,
+            as: "status"
+        }
+    }
 );
 
 

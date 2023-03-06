@@ -7,7 +7,7 @@ exports.index = async (req, res, next) => {
     res.render("customers/index", {
         title: pageTitles.CUSTOMERS,
         customers,
-        numberOfCustomers: 9,
+        numberOfCustomers,
         page
     });
 }

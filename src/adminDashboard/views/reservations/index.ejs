@@ -30,7 +30,7 @@
           <a href="/dashboard/reservations/<%= reservation.dataValues.id %>" class="text-decoration-none text-primary"><%= reservation.dataValues.id %></a>
         </td>
         <td class="py-3"><%= reservation.dataValues.amount %></td>
-        <td class="py-3"><%= new Date(reservation.dataValues.date).toLocaleDateString() %></td>
+        <td class="py-3"><%= new Date(reservation.dataValues.date).toLocaleDateString("ar-EG") %></td>
         <td class="py-3"><%= reservation.dataValues.location %></td>
         <td>
           <a href="/dashboard/customers/<%= reservation.customer.dataValues.id %>" class="text-decoration-none text-primary"><%= reservation.customer.dataValues.name %></a>

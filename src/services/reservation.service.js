@@ -49,7 +49,9 @@ exports.findOne = FactoryService.findOne(Reservation,
             where: { isAdditional: false} 
         },
         { required: true, model: ReservationStatus, as: "status" },
-        { required: true, model: Car }
+        { required: true, model: Car },
+        { model: Picker, attributes: { include: ["id", "name"]}}
+
     ]
 );
 exports.create = async (reservationData, workHourId, reservationAdditionalServices) => {
@@ -84,11 +86,9 @@ exports.create = async (reservationData, workHourId, reservationAdditionalServic
 }
 exports.addPickerToReservation = async (reservationId, pickerId) => {
     let transaction = await db.transaction();
-    console.log("reservationId", reservationId)
-    console.log("pickerId", pickerId)
     try {
         let reservationIsUpdated = await Reservation.update(
-            { statusId: 2 }, 
+            { statusId: 2, pickerId }, 
             { 
                 where: { id: reservationId }, 
                 transaction 

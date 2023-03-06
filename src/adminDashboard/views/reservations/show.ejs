@@ -11,14 +11,32 @@
                 </li>
                 <li class="list-group-item">
                     <div class="row">
+                        <div class="col">المبلغ</div>
+                        <div class="col"><%= reservation.dataValues.amount %></div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col">المبلغ بدون ضريبة</div>
+                        <div class="col"><%= ((reservation.dataValues.amount) - (reservation.dataValues.amount * 0.15)).toFixed(2)  %></div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col">الضريبة</div>
+                        <div class="col"><%= (reservation.dataValues.amount * 0.15).toFixed(2) %></div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="row">
                         <div class="col">يوم الحجز</div>
-                        <div class="col"><%= new Date(reservation.dataValues.date).toLocaleDateString() %></div>
+                        <div class="col"><%= new Date(reservation.dataValues.date).toLocaleDateString("ar-EG") %></div>
                     </div>
                 </li>
                 <li class="list-group-item">
                     <div class="row">
                         <div class="col">توقيت الحجز</div>
-                        <div class="col"><%= new Date(reservation.dataValues.date).toLocaleTimeString() %></div>
+                        <div class="col"><%= new Date(reservation.dataValues.date).toLocaleTimeString("ar-EG") %></div>
                     </div>
                 </li>
                 <li class="list-group-item">
@@ -57,6 +75,16 @@
                         <div class="col"><%= reservation.car.dataValues.color %></div>
                     </div>
                 </li>
+                <% if (reservation.picker) { %>
+                    <li class="list-group-item">
+                        <div class="row">
+                            <div class="col">البايكر</div>
+                            <div class="col">
+                                <a href="/dashboard/pickers/<%= reservation.picker.dataValues.id %>" class="text-decoration-none text-primary"><%= reservation.picker.dataValues.name %></a>
+                            </div>
+                        </div>
+                    </li>
+                <% } %>
             </ul>
         </div>
         <div>

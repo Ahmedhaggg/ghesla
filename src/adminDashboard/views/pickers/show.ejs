@@ -36,17 +36,18 @@
             </ul> 
         </div>
         <div class="col-md-6 text-center">
-            <img src="<%= picker.dataValues.image %>" alt="Product Image" class="img-fluid">
+            <img src="<%= picker.dataValues.image %>" alt="Product Image" height="250px">
         </div>
     </div>
-    <h5 class="mt-2 mb-4">الحجوازات</h5>
+    <h5 class="mt-4 mb-3 text-center">الحجوازات</h5>
     <% if (picker.reservations.length > 0) { %>
         <div class="table-responsive">
             <table class="table table-striped">
                 <thead>
                     <tr>
                         <th scope="col">رقم الحجز</th>
-                        <th scope="col">تاريخ الحجز</th>
+                        <th scope="col">يوم الحجز</th>
+                        <th scope="col">توقيت الحجز</th>
                         <th scope="col">الكمية</th>
                         <th scope="col">حالة الحجز</th>     
                     </tr>
@@ -54,13 +55,13 @@
                 <tbody>
                     <% picker.reservations.forEach(function(reservation, index) { %>
                         <tr>
-                            <td class="py-3"><%= index + 1 %></td>
                             <td class="py-3">
                                 <a href="/dashboard/pickers/<%= reservation.dataValues.id %>" class="text-decoration-none text-primary"><%= reservation.dataValues.id %></a>
                             </td>
-                            <td class="py-3"><%= reservation.dataValues.date %></td>
+                            <td class="py-3"><%= (reservation.dataValues.date).toLocaleDateString() %></td>
+                            <td class="py-3"><%= (reservation.dataValues.date).toLocaleTimeString() %></td>
                             <td class="py-3"><%= reservation.dataValues.amount %></td>
-                            <td class="py-3"><%= reservation.dataValues.status %></td>
+                            <td class="py-3"><%= reservation.status.dataValues.name %></td>
                         </tr>
                     <% }); %>
                 </tbody>
