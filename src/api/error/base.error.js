@@ -1,11 +1,11 @@
 class BaseError extends Error {
-    constructor(name , httpStatusCode , description){
+    constructor(error , httpStatusCode , description){
         super(description);
         Object.setPrototypeOf(this , new.target.prototype)
-        this.name = name;
+        this.error = error;
         this.httpStatusCode = httpStatusCode;
         this.description = description;
-
+        this.success = false;
         Error.captureStackTrace(this);
     }
 }

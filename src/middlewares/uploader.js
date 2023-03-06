@@ -37,4 +37,4 @@ exports.upload = (field) => multer({
     }
 }).single(field)
 
-exports.delete = async key => await s3.deleteObject({ Bucket: AWS_BUCKET, Key: key }).promise()
+exports.delete = async key => await s3.deleteObject({ Bucket: AWS_BUCKET, Key: key }).promise().then(() => console.log("deleted success")).catch(() => console.log("error"))

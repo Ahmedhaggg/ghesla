@@ -12,7 +12,10 @@ const {
     REDIS_PORT,
     AWS_S3_ACCESS_KEY, 
     AWS_S3_SECRET_KEY, 
-    AWS_BUCKET
+    AWS_BUCKET,
+    INFOBIP_API_KEY,
+    INFOBIP_API_URL,
+    APPLICATION_NAME
 } = process.env;
 
 module.exports = {
@@ -27,5 +30,8 @@ module.exports = {
     UPLOADPATH,
     AWS_S3_ACCESS_KEY, 
     AWS_S3_SECRET_KEY, 
-    AWS_BUCKET
+    AWS_BUCKET,
+    INFOBIP_API_KEY,
+    INFOBIP_API_URL,
+    APPLICATION_NAME
 };

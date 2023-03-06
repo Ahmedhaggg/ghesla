@@ -1,0 +1,44 @@
+<%- include("../partials/header") %>
+<h2 class="text-center">الزبائن</h2>
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">الرقم</th>
+                <th scope="col">الاسم</th>
+                <th scope="col">رقم الهاتف</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% customers.forEach(function(customer, index){ %>
+                <tr>
+                    <td class="py-3">
+                        <a href="/dashboard/customers/<%= customer.dataValues.id %>" class="text-decoration-none text-primary"><%= index %></a>
+                    </td>
+                    <td class="py-3"><%= customer.dataValues.name %></td>
+                    <td class="py-3"><%= customer.dataValues.phoneNumber %></td>
+                </tr>
+            <% }); %>
+      <!-- Add more rows as needed -->
+        </tbody>
+    </table>
+    <% if (numberOfCustomers > 0) { %>
+        <% if (numberOfCustomers > 10) { %>
+            <% var numberOfPages = Math.ceil(numberOfCustomers / 10) %>
+            <div class="paginations">
+                <ul class="pagination">
+                    <li class="page-item<%= (page == 1) ? " disabled" : "" %>"><a class="page-link" href="/dashboard/customers?page=<%= page - 1 %>">السابق</a></li>
+                    <% for(let i = 0; i < numberOfPages; i++) { %>
+                        <li class="page-item">
+                            <a class="page-link" href="/dashboard/customers?page=<%= i + 1%>"><%= (i + 1).toLocaleString('ar-EG');%></a>
+                        </li>
+                    <% } %>
+                    <li class="page-item<%= (numberOfPages > 1 && page < numberOfPages) ? "" : " disabled" %>"><a class="page-link" href="/dashboard/customers?page=<%= page + 1 %>">التالي</a></li>
+                </ul>
+            </div>
+        <% } %>
+    <% } else { %>
+        <p class="alert alert-info">لا يوجد زبائن حاليا</p>        
+    <% } %>
+</div>
+<%- include("../partials/footer") %>

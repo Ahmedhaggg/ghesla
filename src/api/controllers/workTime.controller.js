@@ -1,4 +1,3 @@
-const expressAsyncHandler = require("express-async-handler");
 let workTimeService = require("../../services/workTime.service");
 let FactoryController = require('./controllerFactory');
 

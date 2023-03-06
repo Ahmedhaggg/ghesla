@@ -1,0 +1,77 @@
+<%- include("../partials/header") %>
+<div class="d-flex">
+    <div class="col-md-12 col-6">
+        <div class="card">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col">اسم الزبون</div>
+                        <div class="col"><%= customer.dataValues.name %></div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col"> رقم الهاتف</div>
+                        <div class="col"><%= customer.dataValues.phoneNumber %></div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col">البريد الالكتروني</div>
+                        <div class="col"><%= customer.dataValues.email %></div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col">المدينة</div>
+                        <div class="col"><%= customer.city.dataValues.name %></div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col">عدد الحجوزات</div>
+                        <div class="col"><%= customer.reservations.length %></div>
+                    </div>
+                </li>
+            </ul>
+        </div>     
+    </div>
+</div>
+<h3 class="mt-5 mb-3 text-center">الحجوزات</h3>
+<div class="table-responsive">
+    <% if (customer.reservations.length) { %>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">رقم الحجز</th>
+                    <th scope="col">المبلغ</th>
+                    <th scope="col">التاريخ</th>
+                    <th scope="col">الموقع</th>
+                    <th scope="col">موديل السيارة</th>
+                    <th scope="col">لون السيارة</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% customer.reservations.forEach(function(reservation) { %>
+                    <tr>
+                        <td class="py-3">
+                            <a href="/dashboard/reservations/<%= reservation.dataValues.id %>" class="text-decoration-none text-primary"><%= reservation.dataValues.id %></a>
+                        </td>
+                        <td class="py-3"><%= reservation.dataValues.amount %></td>
+                        <td class="py-3"><%= (reservation.dataValues.date).toLocaleDateString() %></td>
+                        <td class="py-3"><%= reservation.dataValues.location %></td>
+                        <td class="py-3"><%= reservation.car.dataValues.model %></td>
+                        <td class="py-3"><%= reservation.car.dataValues.color %></td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    <% } else { %>
+        <p class="alert alert-info">لم يقوم الزبون باي حجوازات حتي الان</p>        
+    <% } %>
+</div>
+
+
+
+
+<%- include("../partials/footer") %>

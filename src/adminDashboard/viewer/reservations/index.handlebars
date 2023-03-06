@@ -1,0 +1,63 @@
+<h2 class="text-center">الجوزات</h2>
+<form action="/dashboard/reservations" method="get">
+{{status}}
+
+<br>
+{{#each  statuses }}
+    {{#ifEquel "stttttttttttttttttttt" status }}
+        selected
+    {{/ifEquel}}
+    {{status}}
+    <br>
+{{/each}}
+    <div class="input-group">
+        <select class="form-select" id="inputGroupSelect04" aria-label="Example select with button addon" name="status">
+            {{#each  statuses }}
+                <option value="{{this.dataValues.name}}"
+                    {{#ifEquel status this.dataValues.name }}
+                        selected
+                    {{/ifEquel}}
+                >{{ this.dataValues.name }}</option>
+            {{/each}}
+        </select>
+        <button class="btn btn-primary" type="submit">فلتر الخدمات حسب الحالة</button>
+    </div>
+</form>
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">الرقم</th>
+                <th scope="col">المبلغ</th>
+                <th scope="col">التاريخ</th>
+                <th scope="col">المكان</th>
+                <th scope="col">اسم الزبون</th>
+                <th scope="col">رقم هاتف الزبون</th>
+                <th scope="col">الخدمة الاساسية</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each reservations }}
+                <tr>
+                    <td class="py-3">
+                        <a href="/dashboard/reservations/{{this.dataValues.id}}" class="text-decoration-none text-primary">{{this.dataValues.name}}</a>
+                    </td>
+                    <td class="py-3">{{this.dataValues.amount}}</td>
+                    <td class="py-3">{{#toLocalDateTime this.dataValues.date}}{{/toLocalDateTime}}</td>
+                    <td class="py-3">{{this.dataValues.location}}</td>
+                    <td>
+                        <a href="/dashboard/customers/{{this.customer.dataValues.id}}" class="text-decoration-none text-primary">{{this.customer.dataValues.name}}</a>
+                    </td>
+                    <td class="py-3">{{this.customer.dataValues.phoneNumber}}</td>
+                    <td class="py-3">{{#or this.services "..."}}{{/or}}</td>
+                </tr>
+            {{/each}}
+      <!-- Add more rows as needed -->
+        </tbody>
+    </table>
+    {{#if reservations.length }}
+            
+    {{else}}
+        <p class="alert alert-info">{{status}} لا توجد حجوازات</p>        
+    {{/if}}
+</div>

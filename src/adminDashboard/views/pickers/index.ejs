@@ -1,0 +1,41 @@
+<%- include("../partials/header") %>
+<h3 class="text-center mt-5 mb-3">البايكرز</h3>
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">الرقم</th>
+                <th scope="col">الاسم</th>
+                <th scope="col">رقم الهاتف</th>
+                <th scope="col">الصورة</th>
+                <th scope="col">البريد الالكتروني</th>
+                <th scope="col">تعديل</th>        
+            </tr>
+        </thead>
+        <tbody>
+        <% pickers.forEach(function(picker, index) { %>
+            <tr>
+                <td class="py-3"><%= index + 1 %></td>
+                <td class="py-3">
+                    <a href="/dashboard/pickers/<%= picker.dataValues.id %>" class="text-decoration-none text-primary"><%= picker.dataValues.name %></a>
+                </td>
+                <td class="py-3"><%= picker.dataValues.phoneNumber %></td>
+                <td>
+                    <img src=<%= picker.dataValues.image %> alt=<%= picker.dataValues.name %> style="width: 60px; height: 60px"> 
+                </td>
+                <td class="py-3"><%= picker.dataValues.email %></td>
+                <td class="py-3">
+                    <a rel="stylesheet" href="/dashboard/pickers/<%= picker.dataValues.id %>/edit" class="btn btn-outline-primary">تعديل</a>
+                </td>
+            </tr>
+        <% }); %>
+    </tbody>
+</table>
+<% if (pickers.length === 0) { %>
+    <p class="alert alert-info">لا يوجد بايكرز</p>        
+<% } %>
+</div>
+<div class="text-center mt-3">
+    <a class="btn btn-primary" href="/dashboard/pickers/create">اضافة بايكر جديد</a>
+</div>
+<%- include("../partials/footer") %>

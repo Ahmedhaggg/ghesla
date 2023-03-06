@@ -15,4 +15,10 @@ router.post("/login/verify",
     customerAuthController.verify
 );
 
+router.post("/register",
+    customerAuthValidation.validate("register"),
+    checkValidationError,
+    customerAuthController.register
+);
+
 module.exports = router;

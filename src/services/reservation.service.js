@@ -1,51 +1,111 @@
-let { Reservation, ReservationTime, ReservationAdditionalService, WorkHour } = require("../models");
-let FactoryService = require("./service.factory");
+let { Reservation, ReservationStatus, ReservationAdditionalService, WorkHour, Service, Customer, Picker, Car } = require("../models");
+let FactoryService = require("./factory.service");
 let {db} = require("../config/database");
-let messages = require("../api/error/errors.messages")
-exports.create = async (reservationData, reservationTime, reservationAdditionalServices) => {
-    let transaction = await db.transaction();
+let messages = require("../api/error/errors.messages");
+const APIError = require("../api/error/api.error");
+const HttpStatusCode = require("../api/error/httpStatusCode");
+exports.count = async (status = null) => await Reservation.count({
+    include: {
+        required: true,
+        model: ReservationStatus,
+        as: "status",
+        where: status ? { name: status} : null
+    }
+});
 
-    try {
-        let workHour = await WorkHour.findOne({ where : { hour: reservationTime.hour, date: reservationTime.date }});
-        if (workHour.availablePlaces == 0) 
-            throw new Error({ type: "availablePlaces" });
-
-        let newReservation= await Reservation.create(reservationData, { transaction });
-
-        let newReservationTime = await ReservationTime.create({
-            date: reservationTime.date,
-            reservationId: newReservation.id            
-        }, { transaction })
-
-        if (!reservationAdditionalServices) {
-            return {
-                ...newReservation,
-                reservationTime
-            }
+// exports.findAll = FactoryService.findAll(Reservation, null, [{ model: Customer }, { model: ReservationStatus }] );
+exports.findAll = async (status = null) => await Reservation.findAll({ 
+    attributes: { exclude: ["statusId"]},
+    include: [
+        {
+            model: Customer
+        },
+        { 
+            required: true,
+            as: "status",
+            model: ReservationStatus,
+            where: status ? { name: status }: {}
+        },
+        {
+            model: Service,
+            attributes: { include: "name" }
         }
+    ]
+})
 
-        let newReservationAdditionalServicesData = reservationAdditionalServices.map(additionalService => ({
-            ...additionalService,
-            reservationId: newReservation.id
-        }))
-
-        let newReservationAdditionalServices = await ReservationAdditionalService.bulkCreate(newReservationAdditionalServicesData, { transaction })
+exports.findByCustomerId = FactoryService.findAll(Reservation, { exclude: ["status"]}, [
+    { model: ReservationStatus, attributes: ["name"], as: "status" },
+    { required: true, model: Car },
+    { required: true, model: Service }
+])
+exports.findOne = FactoryService.findOne(Reservation,
+    null,
+    [
+        { required: true, model: Customer },
+        { 
+            required: true, 
+            model: Service, 
+            attributes: ["name", "image", "isAdditional"], 
+            where: { isAdditional: false} 
+        },
+        { required: true, model: ReservationStatus, as: "status" },
+        { required: true, model: Car }
+    ]
+);
+exports.create = async (reservationData, workHourId, reservationAdditionalServices) => {
+    const transaction = await db.transaction();
+    try {
+        const workHour = await WorkHour.findOne({ where: { id: workHourId }, raw: true });
+        if (!workHour || !workHour.availablePlaces || workHour.date < new Date()) throw new APIError("notAvailableWorkPlaces", HttpStatusCode.BAD_REQUEST, messages.notAvailableHourWork);
+        const newReservation = await Reservation.create({...reservationData, date: workHour.date }, { transaction });
+        const newReservationAdditionalServices = reservationAdditionalServices
+            ? await ReservationAdditionalService.bulkCreate(reservationAdditionalServices.map(additionalService => ({
+                    ...additionalService, 
+                    reservationId: newReservation.id 
+                })), { transaction })
+            : null;
+        
+        
+        let updateAvailablePlacesInWorkHour = await WorkHour.increment({ availablePlaces: -1}, { where: { id: workHourId }, transaction })
+        console.log(updateAvailablePlacesInWorkHour)
+        if (updateAvailablePlacesInWorkHour[0][1] !== 1) 
+            throw new Error();
         
         await transaction.commit();
-        
-        return {
-            ...newReservation,
-            reservationTime,
-            newReservationAdditionalServices
-        }
+        return { 
+            success: true,
+            newReservation : { ...newReservation, newReservationAdditionalServices }
+        };
     } catch(err) {
+        let errorMessage = err.error === "notAvailableWorkPlaces" ? messages.notAvailableHourWork : messages.createReservationError
         await transaction.rollback();
-
-        if (err.type == "availablePlaces")
-            return {
-                success: false,
-                message: messages.notAvailableHourWork
+        return { success: false, message: errorMessage }
+    }
+}
+exports.addPickerToReservation = async (reservationId, pickerId) => {
+    let transaction = await db.transaction();
+    console.log("reservationId", reservationId)
+    console.log("pickerId", pickerId)
+    try {
+        let reservationIsUpdated = await Reservation.update(
+            { statusId: 2 }, 
+            { 
+                where: { id: reservationId }, 
+                transaction 
             }
-        return null;
+        );
+        if (reservationIsUpdated[0] == 0)
+            throw new Error();
+        
+        let pickerIsUpdated = await Picker.update({ isWorking: true }, { where: { id: pickerId }});
+
+        if (pickerIsUpdated[0] == false)
+            throw new Error();
+
+        await transaction.commit();
+        return true;
+    } catch(error) {
+        await transaction.rollback();
+        return false;
     }
 }

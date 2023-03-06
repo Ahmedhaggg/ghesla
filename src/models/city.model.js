@@ -1,20 +1,18 @@
 const { DataTypes } = require("sequelize");
 let { db } = require("../config/database");
 
-let ReservationTime = db.define("reservationsTime", {
+let City = db.define("cities", {
     id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true,
         allowNull: false
-    },
-    date: {
-        type: DataTypes.DATE,
+    }, 
+    name: {
+        type: DataTypes.STRING(25),
         allowNull: false
     }
-}, {
-    timestamps: false
-});
 
+}, { timestamps: false });
 
-module.exports = ReservationTime;
+module.exports = City;

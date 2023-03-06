@@ -1,0 +1,109 @@
+<%- include("../partials/header") %>
+<h4 class="mb-4 text-center">اضافة بايكر</h4>
+<form method="POST" action="/dashboard/pickers" enctype="multipart/form-data">
+    <div class="mb-3">
+        <input type="text" class="form-control" placeholder="الاسم" name="name"
+            <% if (lastValues?.name) { %>
+                value="<%= lastValues.name %>"
+            <% } %>
+        >
+    </div>
+    <% const nameError = validationErrors.find(error => error.param === "name"); %>
+    <% if (nameError) { %>
+		<p class="alert alert-danger py-2"><%= nameError.msg %></p>
+    <% } %>
+    
+    <div class="mb-3">
+        <input type="email" class="form-control" placeholder="الايميل" name="email"
+            <% if (lastValues?.email) { %>
+                value="<%= lastValues.email %>"
+            <% } %>
+        >
+    </div>
+    <% const emailError = validationErrors.find(error => error.param === "email"); %>
+    <% if (emailError) { %>
+		<p class="alert alert-danger py-2"><%= emailError.msg %></p>
+    <% } %>
+
+    <div class="mb-3">
+        <input type="tel" class="form-control" placeholder="رقم الهاتف" name="phoneNumber"
+            <% if (lastValues?.phoneNumber) { %>
+                value="<%= lastValues.phoneNumber %>"
+            <% } %>
+        >
+    </div>
+    <% const phoneError = validationErrors.find(error => error.param === "phoneNumber"); %>
+    <% if (phoneError) { %>
+		<p class="alert alert-danger py-2"><%= phoneError.msg %></p>
+    <% } %>
+
+    <div class="mb-3">
+        <input type="password" class="form-control" placeholder="كلمة المرور" name="password"
+            <% if (lastValues?.password) { %>
+                value="<%= lastValues.password %>"
+            <% } %>
+        >
+    </div>
+    <% const passwordError = validationErrors.find(error => error.param === "password"); %>
+    <% if (passwordError) { %>
+		<p class="alert alert-danger py-2"><%= passwordError.msg %></p>
+    <% } %>
+
+    <div class="mb-3">
+        <input type="password" class="form-control" placeholder="تاكيد كلمة المرور" name="confirmPassword"
+            <% if (lastValues?.confirmPassword) { %>
+                value="<%= lastValues.confirmPassword %>"
+            <% } %>
+        >
+    </div>
+    <% const confirmError = validationErrors.find(error => error.param === "confirmPassword"); %>
+    <% if (confirmError) { %>
+		<p class="alert alert-danger py-2"><%= confirmError.msg %></p>
+    <% } %>
+
+    <div class="mb-3">
+        <label for="formFile" class="form-label">اضف صورة البايكر</label>
+        <div class="input-group">
+            <button class="btn btn-secondary" type="button" id="inputGroupFileAddon">اختار ملف</button>
+            <input type="text" class="form-control" placeholder="لم يتم اختيار ملف" readonly>
+            <input class="form-control" type="file" id="formFile" style="display: none;" name="image">
+        </div>
+    </div>
+    <% const imageError = validationErrors.find(error => error.param === "image"); %>
+    <% if (imageError) { %>
+		<p class="alert alert-danger py-2"><%= imageError.msg %></p>
+    <% } %>
+    <div class="mb-3">
+        <input type="datetime-local" class="form-control" placeholder="اختار يوم بدا العمل" name="startWorkAt"
+            <% if (lastValues?.startWorkAt) {%>
+                value="<%= lastValues.startWorkAt%>"
+            <% } %>
+        >
+    </div>
+    <% const startWorkerror = validationErrors.find(error => error.param === "startWorkAt"); %>
+    <% if (startWorkerror) { %>
+		<p class="alert alert-danger py-2"><%= startWorkerror.msg %></p>
+    <% } %>
+    <% if (createPickerError) { %>
+        <div class="my-2">
+            <p class="alert alert-danger py-2"><%= createPickerError %></p>
+        </div>
+    <% } %>
+    <div class="mb-3">
+        <button type="submit" class="btn btn-primary">إرسال</button>
+    </div>
+
+</form>
+
+<script>
+    const inputGroupFile = document.getElementById('inputGroupFileAddon');
+    const inputGroupFileInput = document.getElementById('formFile');
+        inputGroupFile.addEventListener('click', () => {
+        inputGroupFileInput.click();
+    });
+        inputGroupFileInput.addEventListener('change', () => {
+        inputGroupFileInput.previousElementSibling.value = inputGroupFileInput.files[0].name;
+    });
+</script>
+
+<%- include("../partials/footer") %>

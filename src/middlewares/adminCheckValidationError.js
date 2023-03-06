@@ -3,7 +3,7 @@ let uploader = require("../middlewares/uploader")
 let adminCheckValidationError = async (req, res, next) => {
     try {
         let validationResultArray = validationResult(req).array();
-        console.log("body", req.body)
+        console.log("body", validationResultArray)
         if (validationResultArray.length === 0)
             return next();
         

@@ -23,7 +23,7 @@ exports.update = async (req, res, next) => {
 
     let newDiscountData = req.body;
 
-    let updateDiscount = await serviceService.updateDiscount(discountId,newDiscountData);
+    let updateDiscount = await serviceService.updateDiscount(discountId, newDiscountData);
 
     if (!updateDiscount) { 
         req.flash("updateDiscountError", dashboardMessages.updateDiscountError);

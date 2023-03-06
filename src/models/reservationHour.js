@@ -12,6 +12,10 @@ let WorkHour = db.define("workHours", {
         type: DataTypes.DECIMAL(5, 2),
         allowNull: false
     },
+    date: {
+        type: DataTypes.DATE,
+        allowNull: false
+    },
     availablePlaces: {
         type: DataTypes.TINYINT,
         allowNull: false

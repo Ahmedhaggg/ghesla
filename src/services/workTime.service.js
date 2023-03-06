@@ -1,6 +1,6 @@
 const { db } = require("../config/database");
 let { WorkDay, WorkHour, Picker } = require("../models");
-let FactoryService = require("./service.factory")
+let FactoryService = require("./factory.service")
 
 exports.countDays = async () => await WorkDay.count();
 
@@ -12,7 +12,7 @@ exports.createWorkDay = async (day) => {
         let newDay = await WorkDay.create(day, { transaction });
         
         let hours = []
-        for (let i = 0; i < 21; i += 2) {
+        for (let i = 9; i < 21; i += 2) {
             hours.push({
                 hour: i,
                 availablePlaces: numberOfPickers,
@@ -29,20 +29,12 @@ exports.createWorkDay = async (day) => {
 
 exports.createWorkDayHours = async (hours) => await WorkHour.bulkCreate(hours);
 
-exports.findAll = FactoryService.findAll(WorkDay, 
-    {
-        includes: [
-            { 
-                model: WorkHour
-            }    
-        ]
-    }
-);
+exports.findAll = FactoryService.findAll(WorkDay);
 
 exports.decrementHourPlace = async (id) => await WorkHour
     .increment({ availablePlaces: - 1 }, { where: { id} });
 
-exports.findWorkDayHours = FactoryService.findOne(WorkDay, [{
+exports.findWorkDayHours = FactoryService.findOne(WorkDay, null, [{
         model: WorkHour,
         excludeAttribute: "workDayId"
     }] 
@@ -56,21 +48,13 @@ exports.saveCurrentWeekWorkTimes = async (days) => {
     try {
         let numberOfPickers = await Picker.count({ transaction: newTransaction });
         await Promise.all(days.map((day) => {
-            // Create the day and save their friend messages
             if (day.isHoliday)
                 return null;
             return WorkDay.create(day, { transaction: newTransaction })
                 .then((newDay) => {
                 
-                    let hours = [];
+                    let hours = day.workHours.map(hour => ({ ...hour, availablePlaces: numberOfPickers, workDayId: newDay.id }));
 
-                    for (let i = 9; i < 21; i+=2) {
-                        hours.push({
-                            hour: i,
-                            availablePlaces: numberOfPickers,
-                            workDayId: newDay.id
-                        })
-                    }
                     return WorkHour.bulkCreate(hours, { transaction: newTransaction });
                 });
         }));

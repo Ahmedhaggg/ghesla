@@ -6,18 +6,18 @@ let serviceValidation = require("../../validations/service.validation")
 let checkAdminValidationError = require("../../middlewares/adminCheckValidationError");
 const uploader = require("../../middlewares/uploader");
 router.get("/",
-    adminGuard,
+    // adminGuard,
     serviceValidation.validate("index"),
     catchErrors(serviceController.index)
 );
 
 router.get("/create",
-    adminGuard, 
+    // adminGuard, 
     catchErrors(serviceController.create)
 );
 
 router.post("/store",
-    adminGuard, 
+    // adminGuard, 
     uploader.upload("image"),
     serviceValidation.validate("create"),
     checkAdminValidationError,
@@ -25,7 +25,7 @@ router.post("/store",
 );
 
 router.get("/:id", 
-    adminGuard,
+    // adminGuard,
     catchErrors(serviceController.show)
 );
 
@@ -34,7 +34,7 @@ router.get("/:id/edit",
 );
 
 router.put("/:id/update", 
-    adminGuard,
+    // adminGuard,
     serviceValidation.validate("update"),
     checkAdminValidationError,
     catchErrors(serviceController.update)

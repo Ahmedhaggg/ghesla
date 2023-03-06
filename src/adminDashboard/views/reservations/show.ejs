@@ -1,0 +1,90 @@
+<%- include("../partials/header") %>
+<div class="d-flex">
+    <div class="col-md-12 col-6">
+        <div class="card">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col">رقم الحجز</div>
+                        <div class="col"><%= reservation.dataValues.id %></div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col">يوم الحجز</div>
+                        <div class="col"><%= new Date(reservation.dataValues.date).toLocaleDateString() %></div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col">توقيت الحجز</div>
+                        <div class="col"><%= new Date(reservation.dataValues.date).toLocaleTimeString() %></div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col">موقع الحجز</div>
+                        <div class="col"><%= reservation.dataValues.location %></div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col"> حالة الحجز</div>
+                        <div class="col"><%= reservation.status.dataValues.name %></div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col">اسم الزبون</div>
+                        <div class="col"><%= reservation.customer.dataValues.name %></div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col">رقم الزبون</div>
+                        <div class="col"><%= reservation.customer.dataValues.phoneNumber %></div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col">موديل السيارة</div>
+                        <div class="col"><%= reservation.car.dataValues.model %></div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col">لون السيارة</div>
+                        <div class="col"><%= reservation.car.dataValues.color %></div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div>
+            <% if(reservation.status.dataValues.name === "في الانتظار") { %>
+                <h5 class="text-center mt-4 mb-3">اختار بايكر للحجز</h5>
+                <form action="/dashboard/reservations/<%= reservation.dataValues.id %>?_method=PUT" method="post">
+                    <input type="hidden" name="_method" value="PUT">
+                    <div class="input-group">
+                        <select class="form-select" name="pickerId">
+                            <% pickers.forEach(function(picker) { %>
+                                <option 
+                                    value="<%= picker.dataValues.id %>"
+                                    <% if(picker.dataValues.id === lastPickerChoosed) { %>
+                                        selected
+                                    <% } %>
+                                >
+                                    <%= picker.dataValues.name %>
+                                </option>
+                            <% }) %>
+                        </select>
+                        <button class="btn btn-primary" type="submit">حفظ</button>
+                        <% if(pickerNotAvailableError) { %>
+                            <p class="alert alert-danger"><%= pickerNotAvailableError %></p>
+                        <% } %>
+                    </div>
+                </form>
+            <% } %>
+        </div>
+    </div>
+</div>
+<%- include("../partials/footer") %>

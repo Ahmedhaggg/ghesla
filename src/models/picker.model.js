@@ -8,6 +8,16 @@ let Picker = db.define("pickers", {
         primaryKey: true,
         allowNull: false
     },
+    name: {
+        type: DataTypes.STRING(100),
+        allowNull: false,
+        unique: true
+    },
+    phoneNumber: {
+        type: DataTypes.STRING(20),
+        allowNull: false,
+        unique: true
+    },
     email: {
         type: DataTypes.STRING(70),
         allowNull: false
@@ -19,10 +29,13 @@ let Picker = db.define("pickers", {
     password: {
         type: DataTypes.STRING(120),
         allowNull: false
+    },
+    isWorking: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
     }
 }, {
-    timestamps: false,
-    unique: ["email"]
+    timestamps: false
 });
 
 

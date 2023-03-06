@@ -13,16 +13,12 @@ let Reservation = db.define("reservations", {
         allowNull: false
     },
     amount: {
-        type: DataTypes.DECIMAL(3, 2),
+        type: DataTypes.DECIMAL(4, 2),
         allowNull: false
     },
-    tax: {
-        type: DataTypes.DECIMAL(3, 2),
+    date: {
+        type: DataTypes.DATE,
         allowNull: false
-    },
-    status: {
-        type: DataTypes.ENUM,
-        values: ["recieved", "doing", "completed"]
     }
 }, {
     timestamps: false

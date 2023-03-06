@@ -1,5 +1,5 @@
 const cron = require('node-cron');
-let { getNextSevenDaysDate, getFirstDayInNextWeek } = require("../utils/date.handler");
+let { getNextWeekWorkTimes } = require("../utils/date.handler");
 let workTime = require("../services/workTime.service");
 
 exports.createWorkDays = async () => {
@@ -8,7 +8,7 @@ exports.createWorkDays = async () => {
     if (numberIfAvailableDays > 0)
         return;
     
-    let weekDaysList = getNextSevenDaysDate();
+    let weekDaysList = getNextWeekWorkTimes();
     
     try {
         await workTime.saveCurrentWeekWorkTimes(weekDaysList);

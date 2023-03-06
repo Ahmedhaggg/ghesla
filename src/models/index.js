@@ -6,16 +6,18 @@ const CustomerLoginVerification = require("./customerLoginVerification");
 const Picker = require("./picker.model");
 const Reservation = require("./reservation.model");
 const ReservationAdditionalService = require("./reservationAdditionalService.model");
-const ReservationTime = require("./reservationsTime.model");
+const ReservationStatus = require("./reservationStatus.model");
 const Service = require("./service.model");
 const ServiceDiscount = require("./serviceDiscount.model");
 const WorkDay = require("./reservationDay")
 const WorkHour = require("./reservationHour")
-
+const City = require("./city.model");
 // realtion between customer and loginverifcations ==>> customerId in customer table
 Customer.hasOne(CustomerLoginVerification, { foreignKey: "customerId", onUpdate: "cascade", onDelete: "cascade" });
 CustomerLoginVerification.belongsTo(Customer);
 
+City.hasMany(Customer, { foreignKey: "cityId" })
+Customer.belongsTo(City)
 // realtion between customer and cars ==>> customerId in car table
 Customer.hasMany(Car, { foreignKey: "customerId", onUpdate: "cascade", onDelete: "cascade" });
 Car.belongsTo(Customer);
@@ -24,9 +26,9 @@ Car.belongsTo(Customer);
 Car.hasOne(CarPlate, { foreignKey: "carId", onUpdate: "cascade", onDelete: "cascade" });
 CarPlate.belongsTo(Car);
 
-// realtion between reservation and reservationTime ==>> reservationId in reservationTime table
-Reservation.hasOne(ReservationTime, { foreignKey: "reservationId", onUpdate: "cascade", onDelete: "cascade" })
-ReservationTime.belongsTo(Reservation);
+// realtion between reservation and ReservationStatus ==>> reservationId in ReservationStatus table
+ReservationStatus.hasMany(Reservation, { foreignKey: "statusId"  })
+Reservation.belongsTo(ReservationStatus, { foreignKey: "statusId", as: "status" });
 
 // realtion between picker and reservation ==>> pickerId in reservation table
 Picker.hasMany(Reservation, { foreignKey: "pickerId" })
@@ -59,7 +61,7 @@ Service.belongsToMany(Reservation, { through: ReservationAdditionalService });
 
 
 // realtion between reservationHour and ReservationDay
-WorkDay.hasMany(WorkHour, { foreignKey: "workDayId" });
+WorkDay.hasMany(WorkHour, { foreignKey: "workDayId", onDelete: 'cascade', hooks:true });
 WorkHour.belongsTo(WorkDay)
 
 module.exports = {
@@ -69,11 +71,12 @@ module.exports = {
     Car,
     CarPlate,
     Reservation,
-    ReservationTime,
+    ReservationStatus,
     Picker,
     Service,
     ServiceDiscount,
     ReservationAdditionalService,
     WorkDay,
-    WorkHour
+    WorkHour,
+    City
 }

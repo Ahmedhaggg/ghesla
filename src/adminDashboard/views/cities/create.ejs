@@ -1,0 +1,24 @@
+<%- include("../partials/header") %>
+<h4 class="mb-4 text-center">اضافة مدينة</h4>
+<form method="POST" action="/dashboard/cities" enctype="application/x-www-form-urlencoded">
+    <div class="mb-3">
+        <input type="text" class="form-control" placeholder="الاسم" name="name"
+            <% if (lastValues && lastValues.name) { %>
+                value="<%= lastValues.name %>"
+            <% } %>
+        >
+    </div>
+    <% const nameError = validationErrors.find(error => error.param === "name"); %>
+    <% if (nameError) { %>
+		<p class="alert alert-danger py-2"><%= nameError.msg %></p>
+    <% } %>
+    <% if (createCityError) { %>
+        <div class="my-2">
+            <p class="alert alert-danger py-2"><%= createCityError %></p>
+        </div>
+    <% } %>
+    <div class="mb-3">
+        <button type="submit" class="btn btn-primary">حفظ</button>
+    </div>
+</form>
+<%- include("../partials/footer") %>

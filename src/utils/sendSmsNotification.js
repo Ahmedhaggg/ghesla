@@ -1,3 +1,45 @@
+const { APPLICATION_NAME, INFOBIP_API_KEY, INFOBIP_API_URL } = require("../config")
+const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
+
+exports.sendSmsLoginVerificationCode = async (verificationCode, to) => {
+    return true;
+    try {
+        const message =  JSON.stringify({
+            messages: [
+                {
+                    destinations: [
+                        {
+                            to: ` 2${to}`
+                        }
+                    ],
+                    from: APPLICATION_NAME,
+                    text: `verification code: ${verificationCode}`
+                }
+            ]
+        });
+        let response = await fetch(`${INFOBIP_API_URL}/sms/2/text/advanced`, {
+            method: 'POST',
+            body: message,
+            headers: {
+                'Authorization': `App ${INFOBIP_API_KEY}`,
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+        })
+        let isOk = response.status;
+        let json = await response.json();
+        console.log(json)
+        // const smsOptions = {
+        //     to: number,
+        //     text: "رمز التحقق الخاص بك هو" + verificationCode,
+        // };
+    } catch(error) {
+        console.log(error)
+        return false;
+    }
+}
+
+
 // var request = require('request');
 // var options = {
 //   'method': 'POST',
@@ -19,7 +61,3 @@
 //   if (error) throw new Error(error);
 //   console.log(response.body);
 // });
-
-exports.sendSmsLoginVerificationCode = async (verificationCode, number) => {
-    return true;
-}

@@ -1,0 +1,73 @@
+<div class="mt-4">
+    <div class="row">
+        <div class="col-md-6">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col">
+                            <p>الاسم</p>
+                        </div>
+                        <div class="col">
+                            <p class="text-center">{{picker.dataValues.name}}</p>
+                        </div>
+                    </div>
+                </li>
+                 <li class="list-group-item">
+                    <div class="row">
+                        <div class="col">
+                            <p>البريد الالكتروني</p>
+                        </div>
+                        <div class="col">
+                            <p class="text-center">{{picker.dataValues.email}}</p>
+                        </div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col">
+                            <p>رقم الهاتف</p>
+                        </div>
+                        <div class="col">
+                            <p class="text-center">{{picker.dataValues.phoneNumber}}</p>
+                        </div>
+                    </div>
+                </li>
+            </ul> 
+        </div>
+        <div class="col-md-6 text-center">
+            <img src="{{picker.dataValues.image}}" alt="Product Image" class="img-fluid">
+        </div>
+    </div>
+    <h5 class="mt-2 mb-4">الحجوازات</h5>
+    {{#if picker.reservations}}
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">رقم الحجز</th>
+                        <th scope="col">تاريخ الحجز</th>
+                        <th scope="col">الكمية</th>
+                        <th scope="col">حالة الحجز</th>     
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each reservations }}
+                        <tr>
+                            <td class="py-3">{{@index}}</td>
+                            <td class="py-3">
+                                <a href="/dashboard/pickers/{{this.dataValues.id}}" class="text-decoration-none text-primary">{{this.dataValues.id}}</a>
+                            </td>
+                            <td class="py-3">{{this.dataValues.date}}</td>
+                            <td class="py-3">{{this.dataValues.amount}}</td>
+                            <td class="py-3">{{this.dataValues.status}}</td>
+                        </tr>
+                    {{/each}}
+            <!-- Add more rows as needed -->
+            
+                </tbody>
+            </table>
+        </div>
+    {{else}}
+        <p class="alert alert-info">لم يقم البايكر باي حجوازات حتي الان</p>        
+    {{/if}}
+</div>

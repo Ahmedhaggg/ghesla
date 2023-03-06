@@ -1,0 +1,53 @@
+<h2 class="text-center">الجوزات</h2>
+<form action="/dashboard/customers" method="get">
+    <div class="input-group">
+        <select class="form-select" id="inputGroupSelect04" aria-label="Example select with button addon" name="isAdditional">
+            {{#each  customersStatus }}
+                <option value="{{this.id}}"
+                    {{#ifEquel status this.status }}
+                        selected
+                    {{/ifEquel}}
+                >
+                    {{ this.status }} 
+                </option>
+            {{/each}}
+        </select>
+        <button class="btn btn-primary" type="submit">فلتر الخدمات حسب الحالة</button>
+    </div>
+</form>
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">الرقم</th>
+                <th scope="col">الاسم</th>
+                <th scope="col">رقم الهاتف</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each customers }}
+                <tr>
+                    <td class="py-3">
+                        <a href="/dashboard/customers/{{this.dataValues.id}}" class="text-decoration-none text-primary">{{@index}}</a>
+                    </td>
+                    <td class="py-3">{{this.dataValues.name}}</td>
+                    <td class="py-3">{{this.dataValues.phoneNumber}}</td>
+                </tr>
+            {{/each}}
+      <!-- Add more rows as needed -->
+        </tbody>
+    </table>
+    {{#if customers.length }}
+            <div class="paginations">
+                <ul>
+                    {{#makePagination numberOfCustomers}}
+                        <li>
+                            <a href="/dashboard/customers?status={{status}}&page={{this}}">{{this}}</a>
+                        </li>
+                    {{/makePagination}}
+                </ul>
+            </div>
+    {{else}}
+        <p class="alert alert-info">{{status}} لا يوجد زبائن حاليا</p>        
+    {{/if}}
+</div>

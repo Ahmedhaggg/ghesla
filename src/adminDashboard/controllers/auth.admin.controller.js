@@ -5,7 +5,7 @@ let PagesTitles = require("../messages/pages.title")
 exports.showLogin = async (req, res, next) => {
     let validationErrors = req.flash("validationErrors");
     let loginError = req.flash("loginError")
-    console.log(validationErrors)
+    
     res.render("login", { 
         title: PagesTitles.LOGIN,
         loginError,
@@ -17,13 +17,13 @@ exports.showLogin = async (req, res, next) => {
 
 exports.login = async (req, res, next) => {
     let { email, password } = req.body;
-    let admin = await adminService.findOne(email);
+    let admin = await adminService.findOne({ email });
 
     if (!admin) {
         req.flash("message", dashboardMessages.invalidLogin)
         return res.redirect("/dashboard/login")
     }
-
+    console.log(admin)
     let isIncorrectPassword = await hashing.compare(password, admin.password);
 
     if (!isIncorrectPassword) {

@@ -1,0 +1,44 @@
+<h3 class="text-center mt-5 mb-3">البايكرز</h3>
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">الرقم</th>
+            <th scope="col">الاسم</th>
+            <th scope="col">رقم الهاتف</th>
+            <th scope="col">الصورة</th>
+            <th scope="col">البريد الالكتروني</th>
+            <th scope="col">تعديل</th>        
+        </tr>
+        </thead>
+        <tbody>
+        {{#each pickers }}
+            <tr>
+                <td class="py-3">{{#sum @index 1}}{{/sum}}</td>
+                <td class="py-3">
+                    <a href="/dashboard/pickers/{{this.dataValues.id}}" class="text-decoration-none text-primary">{{this.dataValues.name}}</a>
+                </td>
+                <td class="py-3">{{this.dataValues.phoneNumber}}</td>
+                <td>
+                    <img src={{this.dataValues.image}} alt={{this.dataValues.name}} style="width: 60px; height: 60px"> 
+                </td>
+                <td class="py-3">{{this.dataValues.email}}</td>
+                <td class="py-3">
+                    <a rel="stylesheet" href="/dashboard/pickers/{{this.dataValues.id}}/edit" class="btn btn-outline-primary">تعديل</a>
+                </td>
+            </tr>
+        {{/each}}
+      <!-- Add more rows as needed -->
+      
+        </tbody>
+    </table>
+            {{#if pickers.length }}
+            {{else}}
+              <p class="alert alert-info">لا يوجد بايكرز</p>        
+            {{/if}}
+</div>
+
+
+<div class="text-center mt-3">
+    <a class="btn btn-primary" href="/dashboard/pickers/create">اضافة بايكر جديد</a>
+</div>

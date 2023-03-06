@@ -1,26 +1,47 @@
-const { Customer, CustomerLoginVerification } = require("../models");
+const { Customer, CustomerLoginVerification, Reservation, Service, Car, ReservationStatus, City } = require("../models");
+let FactoryService = require("./factory.service");
+exports.count = FactoryService.count(Customer)
+exports.findLoginData = FactoryService.findOne(Customer, ["id", "email", "password"], null);
 
-exports.findOne = async (phoneNumber) =>
-    await Customer.findOne({ where: { phoneNumber } });
+exports.findOne = FactoryService.findOne(Customer, null, [
+    {
+        required: false,
+        model: Reservation,
+        include: [
+            {
+                required: false,
+                model: Service
+                // where: { isAdditional: false }
+            },
+            {
+                required: true,
+                as: "status",
+                model: ReservationStatus,
+            },
+            { 
+                model: Car,
+                required: true
+            }
+        ]
+    },
+    { 
+        model: City,
+        required: true
+    }
+]);
 
-exports.create = async (newCustomerData) => 
-    await Customer.create(newCustomerData); 
+exports.create = FactoryService.create(Customer)
 
 exports.createVerificationCode = async (newVerificationCodeData) => {
-    console.log("verificationCodeverificationCodeverificationCode")
     let verificationCode = await CustomerLoginVerification
         .update(newVerificationCodeData, {
             where: { phoneNumber: newVerificationCodeData.phoneNumber }
         });
-    console.log(verificationCode)
-    if (verificationCode[0] == 1) 
-        return newVerificationCodeData;
         
-    return await CustomerLoginVerification.create(newVerificationCodeData);
+    return verificationCode[0] == 1 ? newVerificationCodeData : await CustomerLoginVerification.create(newVerificationCodeData);
 }
-exports.findVerificationCode = async (phoneNumber) => 
-    await CustomerLoginVerification.findOne({ where: { phoneNumber }});
+exports.findVerificationCode = FactoryService.findOne(CustomerLoginVerification);
 
-exports.deleteVerificationCode = async (id) => 
-    await CustomerLoginVerification.destroy({ where: { id } })
+exports.deleteVerificationCode = FactoryService.deleteOne(CustomerLoginVerification);
 
+exports.findAll = FactoryService.findAll(Customer)

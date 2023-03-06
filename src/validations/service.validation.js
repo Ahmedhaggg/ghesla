@@ -22,20 +22,26 @@ exports.validate = (method) => {
             return [
                 ...create,
                 check("discount.percentage")
-                    .if(body("discount.percentage").notEmpty() || body("discount.expirationAt").notEmpty())
+                    .if(body("discount.expirationAt").notEmpty())
+                    .notEmpty()
+                    .withMessage(messages.notEmpty)
                     .isNumeric()
                     .withMessage(messages.isNumber),
                 check("discount.expirationAt")
-                    .if(body("discount.percentage").notEmpty() || body("discount.expirationAt").notEmpty())
+                    .if(body("discount.percentage").notEmpty())
+                    .notEmpty()
+                    .withMessage(messages.notEmpty)
                     .custom((value) => {
-                        console.log(value)
-                        console.log(new Date())
-                        console.log(value < new Date())
                         if (value < new Date())
                             throw new Error(messages.isExpiredDate)
                         return true
+                    }),
+                check("image")
+                    .custom((value, { req }) => {
+                        if (!req.file)
+                            throw new Error(messages.noFileUploaded)
+                        return true;
                     })
-
             ] 
         
         case "update": 

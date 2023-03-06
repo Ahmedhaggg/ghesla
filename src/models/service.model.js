@@ -9,8 +9,9 @@ let Service = db.define("services", {
         allowNull: false
     },
     name: {
-        type: DataTypes.STRING(20),
-        allowNull: false
+        type: DataTypes.STRING(50),
+        allowNull: false,
+        unique: true
     },
     description: {
         type: DataTypes.TEXT,

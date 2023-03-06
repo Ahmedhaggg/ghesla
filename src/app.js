@@ -17,6 +17,19 @@ const notEqualHelper = function(a, b, options) {
 const hbs = exphbs.create({
     helpers: {
         notEquel: notEqualHelper,
+        findSelectOption: function(value, array, options) {
+            if (array.indexOf(value) == -1) {
+              return options.fn(this);
+            }
+            return options.inverse(this);
+        },
+        ifEquel: function(a, b, options) {
+            console.log(a, b)
+            if (a === b)
+                return options.fn(this)
+            else
+                options.inverse(this) 
+        },
         findError: function (array, field, options) {
             let item = array.find(el => el.param == field);
             if (item)
@@ -33,6 +46,16 @@ const hbs = exphbs.create({
           
             // Return formatted local datetime
             return localDatetime;
+        },
+        makePagination: function(numberOfPages, options) {
+            let items = [];
+            for (let i = 0; i < numberOfPages; i++) {
+                items.push(options.fn(i))
+            }
+            return items;
+        },
+        sum: function(num1, num2) {
+            return num1 + num2;
         }
     }
 });
@@ -78,21 +101,32 @@ app.use("/images", express.static(path.join(__dirname, 'adminDashboard', 'public
 // app.use("/images/id", express.static("/src/adminDashboard/public/images/2023-02-21T11-18-39.992Zdooooooo.PNG"));
 
 
-app.engine('handlebars', hbs.engine);
-app.set('view engine', 'handlebars');
+// app.engine('handlebars', hbs.engine);
+// app.set('view engine', 'handlebars');
+app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'adminDashboard', 'views'));
 
 
 let { db } = require("./config/database");
 let { createWorkDays } = require("./utils/cronjobs")
-let adminService = require("./services/admin.service")
+let adminService = require("./services/admin.service");
+let reservationsStatusService = require("./services/reservationsStatus.service");
+const { RESERVATION_PENDING, RESERVATION_COMPLETED, RESERVATION_DOING } = require("./config/constants");
 
 db.sync().then(async () => {
     await createWorkDays();
     let adminLength = await adminService.count();
-    if (adminLength > 0)
-        return 
-    adminService.create({ email: "admin@gmail.com", password: "Admin12345"});
+    if (!adminLength)
+        await adminService.create({ email: "admin@gmail.com", password: "Admin12345"});
+
+    let statusLength = await reservationsStatusService.count();
+    console.log(statusLength+  "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+    if(statusLength == 0) {
+        await reservationsStatusService.create({ name: RESERVATION_PENDING })
+        await reservationsStatusService.create({ name: RESERVATION_DOING })
+        await reservationsStatusService.create({ name: RESERVATION_COMPLETED })
+    }
+        
 }); 
 // db.sync({ force: true }).catch(err => console.log(err))
 // console.log(Object.keys(Admin.getAttributes()))

@@ -1,6 +1,6 @@
 const { Admin } = require("../models");
-exports.count = async () => await Admin.count();
-exports.create = async (newAdminData) => await Admin.create(newAdminData);
-
-exports.findOne = async (email) => await Admin.findOne({ where: { email } });
+let FactoryService = require("./factory.service")
+exports.count = FactoryService.count(Admin);
+exports.create = FactoryService.create(Admin);
+exports.findOne = FactoryService.findOne(Admin);
 

@@ -4,6 +4,55 @@ const messages = require("./messages");
 
 exports.validate = (method) => {
     switch (method) {
+        case "register": 
+        return [
+            check("phoneNumber")
+                .notEmpty()
+                .withMessage(messages.notEmpty)
+                .isMobilePhone("ar-EG")
+                .withMessage(messages.isPhoneNumber),
+            check("email")
+                .notEmpty()
+                .withMessage(messages.notEmpty)
+                .isEmail()
+                .withMessage(messages.isEmail),
+            check("password")
+                .notEmpty()
+                .withMessage(messages.notEmpty)
+                .isLength({ min: 8 })
+                .withMessage(messages.passwordMinLength)
+                .matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[a-zA-Z\d@$.!%*#?&]/,)
+                .withMessage(messages.weekPassword),
+            check("confirmPassword")
+                .notEmpty()
+                .withMessage(messages.notEmpty)
+                .custom((value, { req }) => {
+                    if (req.body.password !== value)
+                        throw new Error(messages.confirmPassword)
+                    return true;
+                }),
+            check("name")
+                .notEmpty()
+                .withMessage(messages.notEmpty),
+            check("cityId")
+                .notEmpty()
+                .withMessage(messages.notEmpty),
+            check("birthDay.year")
+                .notEmpty()
+                .withMessage(messages.notEmpty)
+                .isNumeric()
+                .withMessage(messages.isNumber),
+            check("birthDay.month")
+                .notEmpty()
+                .withMessage(messages.notEmpty)
+                .isNumeric()
+                .withMessage(messages.isNumber),
+            check("birthDay.day")
+                .notEmpty()
+                .withMessage(messages.notEmpty)
+                .isNumeric()
+                .withMessage(messages.isNumber),
+        ]
         case "login":
             return [
                 check("phoneNumber")

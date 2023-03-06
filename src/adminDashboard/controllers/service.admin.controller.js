@@ -17,15 +17,7 @@ exports.create = async (req, res, next) => {
 }
 
 exports.store = async (req, res, next) => {
-    if (!req.file) {
-        req.flash("validationErrors", [ {
-            msg: DashboardErrorsMessages.noFileUploaded,
-            param: "image",
-            location: "body",
-            value: null
-        } ]);
-        return res.redirect("/dashboard/services/create");
-    }
+    let image = req.file.key;
     let { name, description, price, isAdditional, discount = null } = req.body;
 
     let newService = await serviceService.create({
@@ -33,12 +25,13 @@ exports.store = async (req, res, next) => {
         description,
         price,
         isAdditional,
-        image: req.file.location
+        image: image
     }, discount)
     
     if (!newService) {
         req.flash("createServiceError", DashboardErrorsMessages.createServiceError);
-        await uploader.delete(req.file.key)
+        req.flash("lastValues", req.body);
+        await uploader.delete(image);
         return res.redirect("/dashboard/services/create")
     }
 
@@ -77,7 +70,7 @@ exports.update = async (req, res, next) => {
 exports.show = async (req, res, next) => {
     let { id } = req.params;
 
-    let service = await serviceService.findOne(id);
+    let service = await serviceService.findOne({ id });
     
     if (!service)
         return res.redirect("/dashboard/404")

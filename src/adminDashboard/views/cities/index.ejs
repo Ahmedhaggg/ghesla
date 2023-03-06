@@ -1,0 +1,29 @@
+<%- include("../partials/header") %>
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">الرقم</th>
+                <th scope="col">الاسم</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% cities.forEach(city => { %>
+                <tr>
+                    <td class="py-3"><%= city.dataValues.id %></td>
+                    <td class="py-3"><%= city.dataValues.name %></td>
+                </tr>
+            <% }); %>
+      <!-- Add more rows as needed -->
+        </tbody>
+    </table>
+    <% if (cities.length) { %>
+    <% } else { %>
+        <p class="alert alert-info"><%= status %> لا يوجد مدن مضافة</p>        
+    <% } %>
+</div>
+
+<div class="text-center mt-3">
+    <a class="btn btn-primary" href="/dashboard/cities/create">اضافة مدينة جديدة</a>
+</div>
+<%- include("../partials/footer") %>

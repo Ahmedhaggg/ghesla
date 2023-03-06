@@ -7,7 +7,7 @@ exports.create = expressAsyncHandler(
     async (req, res, next) =>  {
         let carData = req.body;
         let { customerId } = req.customer;
-
+        console.log("customerIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIDDDDDDDDDDDDDDDDD", customerId)
         let newCar = await carService.create(carData, customerId);
         res.status(httpstatusCode.OK).json({
             success: false,
