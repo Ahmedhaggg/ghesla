@@ -9,7 +9,6 @@
                 <th scope="col">رقم الهاتف</th>
                 <th scope="col">الصورة</th>
                 <th scope="col">البريد الالكتروني</th>
-                <th scope="col">تعديل</th>        
             </tr>
         </thead>
         <tbody>
@@ -21,12 +20,9 @@
                 </td>
                 <td class="py-3"><%= picker.dataValues.phoneNumber %></td>
                 <td>
-                    <img src=<%= picker.dataValues.image %> alt=<%= picker.dataValues.name %> style="width: 60px; height: 60px"> 
+                    <img src="https://tvp-system.s3.amazonaws.com/<%= picker.dataValues.image %>" alt=<%= picker.dataValues.name %> style="width: 60px; height: 60px"> 
                 </td>
                 <td class="py-3"><%= picker.dataValues.email %></td>
-                <td class="py-3">
-                    <a rel="stylesheet" href="/dashboard/pickers/<%= picker.dataValues.id %>/edit" class="btn btn-outline-primary">تعديل</a>
-                </td>
             </tr>
         <% }); %>
     </tbody>

@@ -44,7 +44,7 @@
                 </td>
                 <td class="py-3"><%= service.dataValues.price %></td>
                 <td>
-                    <img src=<%= service.dataValues.image %> alt=<%= service.dataValues.name %> style="width: 60px; height: 60px"> 
+                    <img src="https://tvp-system.s3.amazonaws.com/<%= service.dataValues.image %>" alt=<%= service.dataValues.name %> style="width: 60px; height: 60px"> 
                 </td>
                 <td class="py-3">
                     <% if (service.dataValues.isAdditional) { %>
