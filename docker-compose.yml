@@ -1,7 +1,8 @@
 version: '2'
 services:
   node-app:
-    build: .
+    container_name: ghesla-node-container 
+    image: ahmedhaggagrady/ghesla
     env_file:
       - ./.env
     depends_on:
