@@ -6,20 +6,15 @@ services:
       - ./.env
     depends_on:
       - db
-    volumes:
-      - "/express-app/src/adminDashboard/public/images/:/src/adminDashboard/public/images"
 
   db:
     image: mysql
-    command: >
-      --default-authentication-plugin=mysql_native_password
-      --init-file /docker-entrypoint-initdb.d/init.sql
+    command: --default-authentication-plugin=mysql_native_password
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: DatabaseAdmin#12345
     volumes:
       - mysql-data:/var/lib/mysql
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
   nginx: 
     image: nginx:stable-alpine
@@ -38,4 +33,3 @@ services:
       - db
 volumes:
   mysql-data: 
-  images:

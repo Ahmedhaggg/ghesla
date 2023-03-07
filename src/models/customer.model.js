@@ -27,7 +27,7 @@ let Customer = db.define("customers", {
         unique: true
     },
     birthDay: {
-        type: DataTypes.DATE(20),
+        type: DataTypes.DATE,
         allowNull: false
     },
     gender: {

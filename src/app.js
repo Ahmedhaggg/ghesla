@@ -69,7 +69,7 @@ const apiErrorHandlerMiddleware = require("./middlewares/apiErrorHandlerMiddlewa
 const apiNotFoundMiddleware = require("./middlewares/apiNotFoundMiddleware");
 const { adminRoutes } = require("./adminDashboard/routes");
 const cookieParser = require("cookie-parser");
-const session = require("express-session");
+const session = require("cookie-session");
 let flash = require("connect-flash")
 let app = express();
 
@@ -114,20 +114,24 @@ let reservationsStatusService = require("./services/reservationsStatus.service")
 const { RESERVATION_PENDING, RESERVATION_COMPLETED, RESERVATION_DOING } = require("./config/constants");
 
 db.sync().then(async () => {
-    await createWorkDays();
-    let adminLength = await adminService.count();
-    if (!adminLength)
-        await adminService.create({ email: "admin@gmail.com", password: "Admin12345"});
+    try {
+        await createWorkDays();
+        let adminLength = await adminService.count();
+        if (!adminLength)
+            await adminService.create({ email: "admin@gmail.com", password: "Admin12345"});
 
-    let statusLength = await reservationsStatusService.count();
-    console.log(statusLength+  "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-    if(statusLength == 0) {
-        await reservationsStatusService.create({ name: RESERVATION_PENDING })
-        await reservationsStatusService.create({ name: RESERVATION_DOING })
-        await reservationsStatusService.create({ name: RESERVATION_COMPLETED })
+        let statusLength = await reservationsStatusService.count();
+        console.log(statusLength+  "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+        if(statusLength == 0) {
+            await reservationsStatusService.create({ name: RESERVATION_PENDING })
+            await reservationsStatusService.create({ name: RESERVATION_DOING })
+            await reservationsStatusService.create({ name: RESERVATION_COMPLETED })
+        }
+    } catch (error) {
+        console.log("catching weeeeooee", error, "catching")
     }
         
-}); 
+}).catch((err) => console.log("erorororooro", err, "errrrrrrrrrrrrrrrrrrrrrrrrrrrrrr")); 
 // db.sync({ force: true }).catch(err => console.log(err))
 // console.log(Object.keys(Admin.getAttributes()))
 // Admin.findAll().catch(err=> console.log(err))
