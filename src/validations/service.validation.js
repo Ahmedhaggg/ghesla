@@ -1,4 +1,6 @@
 let { check, body, query } = require("express-validator");
+const { isFile } = require("./customs/isFile");
+const { isNewDate } = require("./customs/isNotExpiredDate");
 const messages = require("./messages");
                     // .isMobilePhone(['ar-SA'])
 exports.validate = (method) => {
@@ -31,17 +33,8 @@ exports.validate = (method) => {
                     .if(body("discount.percentage").notEmpty())
                     .notEmpty()
                     .withMessage(messages.notEmpty)
-                    .custom((value) => {
-                        if (value < new Date())
-                            throw new Error(messages.isExpiredDate)
-                        return true
-                    }),
-                check("image")
-                    .custom((value, { req }) => {
-                        if (!req.file)
-                            throw new Error(messages.noFileUploaded)
-                        return true;
-                    })
+                    .custom(isNewDate()),
+                check("image").custom(isFile("image"))
             ] 
         
         case "update": 

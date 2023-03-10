@@ -1,10 +1,10 @@
 <%- include("../partials/header") %>
-<h4>اضافة خدمة</h4>
+<h4>تعديل خدمة</h4>
 <form method="POST" action="/dashboard/services/<%= service.dataValues.id %>/update?_method=PUT" enctype="application/x-www-form-urlencoded">
     <input type="hidden" name="_method" value="PUT">
     <div class="mb-3">
         <input type="text" class="form-control" placeholder="الاسم" name="name"
-            value="<%= lastValues.name || service.dataValues.name %>"
+            value="<%= lastValues?.name || service.dataValues.name %>"
         >
     </div>
     <% const nameError = validationErrors.find(error => error.param === 'name'); %>
@@ -20,23 +20,13 @@
     <% } %>
     <div class="mb-3">
         <input type="number" class="form-control" placeholder="السعر" name="price" step="0.01"
-            value="<%= lastValues.price || service.dataValues.price %>"
+            value="<%= lastValues?.price || service.dataValues.price %>"
         >
     </div>
     <% const priceError = validationErrors.find(error => error.param === 'price'); %>
     <% if (priceError) { %>
         <p class="alert alert-danger py-2"><%= priceError.msg %></p>
     <% } %>
-    <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" name="isAdditional">
-        <option selected value="false">نوع الخدمة</option>
-        <option value="true" <%= service.dataValues.isAdditional ? 'selected' : '' %>>اضافة</option>
-        <option value="false" <%= !service.dataValues.isAdditional ? 'selected' : '' %>>اساسية</option>
-    </select>
-    <% const isAdditionalError = validationErrors.find(error => error.param === 'isAdditional'); %>
-    <% if (isAdditionalError) { %>
-        <p class="alert alert-danger py-2"><%= isAdditionalError.msg %></p>
-    <% } %>
-
     <% if (updateServiceError) { %>
         <p class="alert alert-danger py-2"><%= updateServiceError %></p>
     <% } %>

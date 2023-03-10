@@ -1,5 +1,6 @@
 const { DataTypes } = require("sequelize");
 let { db } = require("../config/database");
+let validationMessages = require("../validations/messages")
 
 let City = db.define("cities", {
     id: {
@@ -10,7 +11,10 @@ let City = db.define("cities", {
     }, 
     name: {
         type: DataTypes.STRING(25),
-        allowNull: false
+        allowNull: false,
+        unique: {
+            msg: validationMessages.isUnique
+        }
     }
 
 }, { timestamps: false });

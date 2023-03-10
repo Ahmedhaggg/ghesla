@@ -1,4 +1,5 @@
 <%- include("../partials/header") %>
+<h4 class="mb-4 text-center">المدن المتاحة</h4>
 <div class="table-responsive">
     <table class="table table-striped">
         <thead>
@@ -19,7 +20,7 @@
     </table>
     <% if (cities.length) { %>
     <% } else { %>
-        <p class="alert alert-info"><%= status %> لا يوجد مدن مضافة</p>        
+        <p class="alert alert-info">لا يوجد مدن مضافة</p>        
     <% } %>
 </div>
 

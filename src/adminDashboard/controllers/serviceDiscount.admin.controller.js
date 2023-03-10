@@ -12,18 +12,19 @@ exports.store = async (req, res, next) => {
         percentage
     });
 
-    if (!newDiscount)
+    if (!newDiscount) {
+        req.flsah("lastValues", { expirationAt, percentage})
         req.flash("createDiscountError", dashboardMessages.createDiscountError)
-
+    }
     res.redirect(`/dashboard/services/${serviceId}`)
 }
 
 exports.update = async (req, res, next) => {
-    let { serviceId, discountId } = req.params.discountId;
+    let { serviceId, discountId } = req.params;
 
-    let newDiscountData = req.body;
+    let { expirationAt, percentage } = req.body;
 
-    let updateDiscount = await serviceService.updateDiscount(discountId, newDiscountData);
+    let updateDiscount = await serviceService.updateDiscount(discountId, { expirationAt, percentage});
 
     if (!updateDiscount) { 
         req.flash("updateDiscountError", dashboardMessages.updateDiscountError);

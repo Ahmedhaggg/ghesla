@@ -16,9 +16,9 @@ exports.index = async (req, res, next) => {
     let reservations = await reservationService.findAll(searchStatus, (page - 1) * 10, 10);
     let numberOfReservations = await reservationService.count(searchStatus);
     let statuses = await reservationsStatusService.findAll();
-    console.log(reservations)
     res.render("reservations/index", {
         title: pagesTitles.RESERVATIONS,
+        page: parseInt(page),
         reservations,
         numberOfReservations,
         statuses,
@@ -30,7 +30,7 @@ exports.show = async (req, res, next) => {
     let { id } = req.params;
 
     let reservation = await reservationService.findOne({ id });
-    console.log(reservation.picker)
+    
     if (!reservation)
         return res.redirect("/dashboard/404")
 

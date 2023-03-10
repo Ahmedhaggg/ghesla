@@ -6,17 +6,17 @@ let cityvalidation = require("../../validations/city.validation");
 let checkAdminValidationError = require("../../middlewares/adminCheckValidationError");
 
 router.get("/", 
-    // adminGuard,
+    adminGuard,
     catchErrors(cityController.index)
 );
 
 router.get("/create", 
-    // adminGuard,
+    adminGuard,
     catchErrors(cityController.create)
 );
 
 router.post("/", 
-    // adminGuard,
+    adminGuard,
     cityvalidation.validate("create"),
     checkAdminValidationError,
     catchErrors(cityController.store)

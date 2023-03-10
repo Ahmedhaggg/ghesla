@@ -37,7 +37,6 @@ exports.create = async (req, res, next) => {
 }
 
 exports.store = async (req, res, next) => {
-    
     if (!req.file) {
         req.flash("validationErrors", [ {
             msg: dashboardMessages.noFileUploaded,
@@ -48,24 +47,24 @@ exports.store = async (req, res, next) => {
         return res.redirect("/dashboard/services/create");
     }
     let image = req.file.key;
-    let { email, password, name, phoneNumber, startWorkAt } = req.body;
+    let { email, password, confirmPassword, name, phoneNumber, startWorkAt } = req.body;
 
     let hashedPassword = await hashing.hash(password);
 
-    startWorkAt = new Date(startWorkAt);
+    let startWorkAtDate = new Date(startWorkAt);
     let newPicker = await pickerService.create({
         email,
         password: hashedPassword,
         name,
         phoneNumber,
         image
-    }, new Date(startWorkAt.getFullYear(), startWorkAt.getMonth(), startWorkAt.getDate()));
+    }, new Date(startWorkAtDate.getFullYear(), startWorkAtDate.getMonth(), startWorkAtDate.getDate()));
  
-    if (!newPicker) {
-        req.flash("createPickerError", dashboardMessages.createPickerError);
-        req.flash("lastValues", { email, name, phoneNumber, startWorkAt });
+    if (newPicker.isFaild) {
+        req.flash("validationErrors", newPicker.message);
+        req.flash("lastValues", { email, name, phoneNumber, startWorkAt, password, confirmPassword });
         await uploader.delete(image);
-
+        return res.redirect(`/dashboard/pickers/create`)
     }
 
     return res.redirect(`/dashboard/pickers/${newPicker.dataValues.id}`);

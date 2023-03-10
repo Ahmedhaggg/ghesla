@@ -3,6 +3,7 @@ let reservationValidation = require("../../validations/reservation.validation");
 let reservationController =require('../controllers/reservation.controller');
 let checkValidationError = require("../../middlewares/checkValidationError")
 let guards = require("../../middlewares/guards");
+const uploader = require("../../middlewares/uploader");
 
 router
     .route("/")
@@ -17,10 +18,20 @@ router
         reservationController.create
     )
 
-router.get("/:id", 
-    guards.apiGuards("customer", "picker"),
-    reservationController.show
-)
+router
+    .route("/:id")
+    .get( 
+        guards.apiGuards("customer", "picker"),
+        reservationController.show
+    )
+    .put(
+        guards.apiGuards("picker"),
+        uploader.uploadTwoFields("after", "before"),
+        reservationValidation.validate("complete"),
+        checkValidationError,
+        reservationController.update
+    )
+
 
 
 module.exports = router;

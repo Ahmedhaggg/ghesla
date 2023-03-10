@@ -1,12 +1,14 @@
 let reservationService = require("../../services/reservation.service");
 let serviceService = require("../../services/service.service");
-
 let FactoryController = require("./controllerFactory")
 let expressAsyncHandler = require("express-async-handler");
 const { calcServicesTax, calcServiceTax } = require("../../utils/serviceTax");
 const APIError = require("../error/api.error");
+const InternalServerError = require("../error/internalServer.error");
 const errorsTypes = require("../error/errors.types");
 const HttpStatusCode = require("../error/httpStatusCode");
+let uploader = require("../../middlewares/uploader");
+const errorsMessages = require("../error/errors.messages");
 exports.show = FactoryController.findOne(reservationService, 'reservation')
 
 exports.create =   expressAsyncHandler(
@@ -23,7 +25,6 @@ exports.create =   expressAsyncHandler(
             tax += +calcServicesTax(additionalServices); 
         }
 
-        console.log({ serviceId: service.id, location, amount: amount + tax, location, customerId })
         let newReservation = await reservationService.create(
             { 
                 serviceId: service.id, 
@@ -48,6 +49,23 @@ exports.index = FactoryController.findAllByCustomerId(reservationService, "reser
 
 exports.update = expressAsyncHandler(
     async (req, res, next) => {
-        let {} = req.body;
+        let { id } = req.params;
+        let images = req.files.map(file => ({
+            [file.fieldname]: file.key
+        }));
+
+        let reservationIsCompleted = await reservationService.completeReservation(id, images);
+
+        if (!reservationIsCompleted) {
+            await req.files.forEach(async file => {
+                await uploader.delete(file.key)
+            });
+
+            throw new InternalServerError()
+        }
+
+        res.status(HttpStatusCode.OK).json({
+            success: true
+        })
     }
 )

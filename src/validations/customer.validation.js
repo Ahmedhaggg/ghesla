@@ -1,4 +1,5 @@
 let { check } = require("express-validator");
+const { passwordIsConfirmed } = require("./customs/passwordIsConfirmed");
 const messages = require("./messages");
                     // .isMobilePhone(['ar-SA'])
 
@@ -23,14 +24,7 @@ exports.validate = (method) => {
                 .withMessage(messages.passwordMinLength)
                 .matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[a-zA-Z\d@$.!%*#?&]/,)
                 .withMessage(messages.weekPassword),
-            check("confirmPassword")
-                .notEmpty()
-                .withMessage(messages.notEmpty)
-                .custom((value, { req }) => {
-                    if (req.body.password !== value)
-                        throw new Error(messages.confirmPassword)
-                    return true;
-                }),
+            passwordIsConfirmed(),
             check("name")
                 .notEmpty()
                 .withMessage(messages.notEmpty),
@@ -72,7 +66,6 @@ exports.validate = (method) => {
                     .notEmpty()
                     .withMessage(messages.notEmpty)
                     .custom((value) => {
-                        console.log(value.toString().length)
                         if (value.toString().length !== 6)
                             throw new Error(messages.isVerificationCode)
                         return true;

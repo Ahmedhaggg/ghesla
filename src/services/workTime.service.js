@@ -1,3 +1,4 @@
+const { Op } = require("sequelize");
 const { db } = require("../config/database");
 let { WorkDay, WorkHour, Picker } = require("../models");
 let FactoryService = require("./factory.service")
@@ -40,6 +41,16 @@ exports.findWorkDayHours = FactoryService.findOne(WorkDay, null, [{
     }] 
 );
 
+exports.findWorkAvailableDayHours = async (query) => await WorkDay.findOne({ 
+    where: query,
+    include:  {
+        required: false,
+        model: WorkHour,
+        excludeAttribute: "workDayId",
+        where: {  availablePlaces: { [Op.gt]: 0 } }
+    }
+});
+
 exports.findHour = FactoryService.findOne(WorkHour);
 
 
@@ -48,11 +59,11 @@ exports.saveCurrentWeekWorkTimes = async (days) => {
     try {
         let numberOfPickers = await Picker.count({ transaction: newTransaction });
         await Promise.all(days.map((day) => {
-            if (day.isHoliday)
-                return null;
             return WorkDay.create(day, { transaction: newTransaction })
                 .then((newDay) => {
-                
+                    if (day.isHoliday)
+                        return;
+                    
                     let hours = day.workHours.map(hour => ({ ...hour, availablePlaces: numberOfPickers, workDayId: newDay.id }));
 
                     return WorkHour.bulkCreate(hours, { transaction: newTransaction });
@@ -64,3 +75,29 @@ exports.saveCurrentWeekWorkTimes = async (days) => {
     }
 } 
 
+exports.saveNewDay = async (day) => {
+    let newTransaction = await db.transaction();
+    try {
+        let numberOfPickers = await Picker.count({ transaction: newTransaction });
+        let newDay = await WorkDay.create(day, { transaction: newTransaction })
+        
+        if (newDay.isHoliday)
+            return;
+    
+        let hours = newDay.workHours.map(hour => ({ ...hour, availablePlaces: numberOfPickers, workDayId: newDay.id }));
+
+        await WorkHour.bulkCreate(hours, { transaction: newTransaction });
+        await newTransaction.commit()
+    } catch (error) {
+        await newTransaction.rollback()
+    }
+}
+exports.getLatesttDay = async () => await WorkDay.findOne({ order: [["date", "DESC"]] })
+exports.deleteOldestDay = async () => {
+    let day = await WorkDay.findOne({
+        order: [
+            ['date', 'ASC']
+        ]
+    }) 
+    await day.destroy()
+}

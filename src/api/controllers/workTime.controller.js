@@ -3,4 +3,4 @@ let FactoryController = require('./controllerFactory');
 
 exports.index =  FactoryController.findAll(workTimeService, "worksDays");
 
-exports.show = FactoryController.findOne(workTimeService, "workDay", "findWorkDayHours");
+exports.show = FactoryController.findOne(workTimeService, "workDay", "findWorkAvailableDayHours");

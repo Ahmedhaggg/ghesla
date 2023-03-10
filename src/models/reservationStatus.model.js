@@ -1,5 +1,5 @@
 const { DataTypes } = require("sequelize");
-let { db } = require("../config/database");
+let { db }  = require("../config/database");
 
 let ReservationStatus = db.define("reservation_status", {
     id: {

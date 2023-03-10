@@ -1,5 +1,6 @@
 const { DataTypes } = require("sequelize");
 let { db } = require("../config/database");
+let validationMessages = require("../validations/messages")
 
 let Customer = db.define("customers", {
     id: {
@@ -19,12 +20,16 @@ let Customer = db.define("customers", {
     phoneNumber: {
         type: DataTypes.STRING(20),
         allowNull: false,
-        unique: true
+        unique: {
+            msg: validationMessages.isUnique
+        }
     }, 
     email: {
         type: DataTypes.STRING(100),
         allowNull: false,
-        unique: true
+        unique: {
+            msg: validationMessages.isUnique
+        }
     },
     birthDay: {
         type: DataTypes.DATE,

@@ -23,7 +23,7 @@ exports.login = async (req, res, next) => {
         req.flash("message", dashboardMessages.invalidLogin)
         return res.redirect("/dashboard/login")
     }
-    console.log(admin)
+    
     let isIncorrectPassword = await hashing.compare(password, admin.password);
 
     if (!isIncorrectPassword) {
@@ -35,7 +35,7 @@ exports.login = async (req, res, next) => {
         isLogin: true,
         id: admin.id
     }
-    res.redirect("/dashboard");
+    res.redirect("/dashboard/services");
 }
 
 // exports.register = async ()  => {

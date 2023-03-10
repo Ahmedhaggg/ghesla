@@ -1,0 +1,32 @@
+<%- include("../partials/header") %>
+<h2 class="text-center">يوم <%= workDay.dataValues.name %></h2>
+<% if (workDay.dataValues.isHoliday) { %>
+  <p class="alert alert-info mt-3">لا يوجد اوقات عمل متاحة اليوم</p>
+<% } else { %>
+  <div class="table-responsive">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th scope="col">الرقم</th>
+          <th scope="col">التوقيت</th>
+          <th scope="col">عدد الحجوزات المتاحة</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% workDay.workHours.forEach(function(hour, index) { %>
+        <tr>
+          <td class="py-3"><%= index+1 %></td>
+          <td class="py-3"><%= new Date(hour.dataValues.date).toLocaleTimeString("ar-EG") %></td>
+          <td class="py-3"><%= hour.dataValues.availablePlaces %></td>
+        <% }); %>
+        <!-- Add more rows as needed -->
+      </tbody>
+    </table>
+    <% if (!workDay.workHours.length) { %>
+      <p class="alert alert-info">لا توجد ايام عمل</p>
+    <% } %>
+
+  </div>
+<% } %>
+
+<%- include("../partials/footer") %>

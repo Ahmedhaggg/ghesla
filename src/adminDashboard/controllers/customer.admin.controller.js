@@ -3,7 +3,8 @@ let pageTitles = require("../messages/pages.title")
 exports.index = async (req, res, next) => {
     let { page = 1 } = req.query;
     let customers = await customerService.findAll(null, ( page - 1) * 10, 10);
-    let numberOfCustomers = await customerService.count()
+    let numberOfCustomers = await customerService.count();
+    
     res.render("customers/index", {
         title: pageTitles.CUSTOMERS,
         customers,

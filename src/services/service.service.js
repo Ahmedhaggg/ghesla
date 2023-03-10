@@ -29,18 +29,17 @@ exports.create = async (serviceData, discountData) => {
 
     try {
         let newService = await Service.create(serviceData, { transaction: newTransaction });
-
-        let discount = discountData ? ServiceDiscount.create({
+        let discount = discountData ? await ServiceDiscount.create({
             ...discountData,
-            serviceId:  newService.id
+            serviceId:  newService.dataValues.id
         }, { transaction: newTransaction }): null;
-        
         await newTransaction.commit()
+       
         return {
             ...newService.dataValues,
             discount
         }
-    } catch (_) {
+    } catch (error) {
         await newTransaction.rollback();
         return null;
     }

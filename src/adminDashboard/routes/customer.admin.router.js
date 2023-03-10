@@ -1,13 +1,13 @@
 let router = require("express").Router();
 const { catchErrors } = require("../../middlewares/adminCatchError");
 const { adminGuard } = require("../../middlewares/guards");
-let customerController = require("../controllers/customer.controller");
+let customerController = require("../controllers/customer.admin.controller");
 router.get("/",
-    // adminGuard,
+    adminGuard,
     catchErrors(customerController.index)
 );
 router.get("/:id",
-    // adminGuard,
+    adminGuard,
     catchErrors(customerController.show)
 );
 

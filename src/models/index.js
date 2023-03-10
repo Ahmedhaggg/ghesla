@@ -9,9 +9,10 @@ const ReservationAdditionalService = require("./reservationAdditionalService.mod
 const ReservationStatus = require("./reservationStatus.model");
 const Service = require("./service.model");
 const ServiceDiscount = require("./serviceDiscount.model");
-const WorkDay = require("./reservationDay")
-const WorkHour = require("./reservationHour")
+const WorkDay = require("./workDay")
+const WorkHour = require("./workHour")
 const City = require("./city.model");
+const ReservationCompletion = require("./reservationCompletion.model");
 // realtion between customer and loginverifcations ==>> customerId in customer table
 Customer.hasOne(CustomerLoginVerification, { foreignKey: "customerId", onUpdate: "cascade", onDelete: "cascade" });
 CustomerLoginVerification.belongsTo(Customer);
@@ -55,10 +56,8 @@ ServiceDiscount.belongsTo(Service)
 Reservation.belongsToMany(Service, { through: ReservationAdditionalService });
 Service.belongsToMany(Reservation, { through: ReservationAdditionalService });
 
-// Reservation.belongsToMany(Service, ReservationAdditionalService);
-
-// relation between service and reservation_additional_service 
-
+Reservation.hasOne(ReservationCompletion, { foreignKey: "reservationId" })
+ReservationCompletion.belongsTo(Reservation, { as: "images" })
 
 // realtion between reservationHour and ReservationDay
 WorkDay.hasMany(WorkHour, { foreignKey: "workDayId", onDelete: 'cascade', hooks:true });
@@ -78,5 +77,6 @@ module.exports = {
     ReservationAdditionalService,
     WorkDay,
     WorkHour,
-    City
+    City,
+    ReservationCompletion,
 }

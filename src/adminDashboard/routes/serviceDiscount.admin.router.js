@@ -1,19 +1,19 @@
 let router = require("express").Router();
 const { catchErrors } = require("../../middlewares/adminCatchError");
 const { adminGuard } = require("../../middlewares/guards");
-let serviceDiscountController = require("../controllers/serviceDiscount.controller");
+let serviceDiscountController = require("../controllers/serviceDiscount.admin.controller");
 let serviceDiscountValidation = require("../../validations/serviceDiscount.validation")
 let checkAdminValidationError = require("../../middlewares/adminCheckValidationError");
 
 router.post("/:serviceId/discount/store",
-    adminGuard,
+    // adminGuard,
     serviceDiscountValidation.validate("create"),
     checkAdminValidationError,
     catchErrors(serviceDiscountController.store)
 );
 
 router.put("/:serviceId/discount/:discountId",
-    adminGuard, 
+    // adminGuard, 
     serviceDiscountValidation.validate("update"),
     checkAdminValidationError,
     catchErrors(serviceDiscountController.update)

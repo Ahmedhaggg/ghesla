@@ -31,9 +31,8 @@
         <p class="alert alert-danger py-2"><%= priceError.msg %></p>
     <% } %>
     <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" name="isAdditional">
-        <option selected value="false">نوع الخدمة</option>
-        <option value="true">اضافية</option>
-        <option value="false">اساسية</option>
+        <option value="false" <%= lastValues?.isAdditional == false ? "selected" : "" %> >اساسية</option>
+        <option value="true" <%= lastValues?.isAdditional == true ? "selected" : "" %> >اضافية</option>
     </select>
     <% const isAdditionalError = validationErrors.find(error => error.param === "isAdditional"); %>
     <% if (isAdditionalError) { %>

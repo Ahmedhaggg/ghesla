@@ -1,7 +1,7 @@
 let router = require("express").Router();
 const { catchErrors } = require("../../middlewares/adminCatchError");
 const { adminGuard } = require("../../middlewares/guards");
-let reservationController = require("../controllers/reservation.controller");
+let reservationController = require("../controllers/reservation.admin.controller");
 
 router.get("/", 
     // adminGuard,

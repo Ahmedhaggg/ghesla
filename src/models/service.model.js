@@ -1,5 +1,6 @@
 const { DataTypes } = require("sequelize");
 let { db } = require("../config/database");
+let validationMessages = require("../validations/messages")
 
 let Service = db.define("services", {
     id: {
@@ -11,7 +12,9 @@ let Service = db.define("services", {
     name: {
         type: DataTypes.STRING(50),
         allowNull: false,
-        unique: true
+        unique: {
+            msg: validationMessages.isUnique
+        }
     },
     description: {
         type: DataTypes.TEXT,

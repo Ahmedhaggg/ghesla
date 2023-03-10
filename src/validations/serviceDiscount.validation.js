@@ -1,4 +1,5 @@
 let { check, body, query } = require("express-validator");
+const { isNewDate } = require("./customs/isNotExpiredDate");
 const messages = require("./messages");
                     // .isMobilePhone(['ar-SA'])
 exports.validate = (method) => {
@@ -11,11 +12,7 @@ exports.validate = (method) => {
         check("expirationAt")
             .notEmpty()
             .withMessage(messages.notEmpty)
-            .custom((value) => {
-                if (value < new Date())
-                    throw new Error(messages.isExpiredDate)
-                return true
-            })
+            .custom(isNewDate())
     ]
     switch (method) {
         case "create":

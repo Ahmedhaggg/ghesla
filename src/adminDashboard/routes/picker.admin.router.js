@@ -1,17 +1,17 @@
 let router = require("express").Router();
 const { catchErrors } = require("../../middlewares/adminCatchError");
 const { adminGuard } = require("../../middlewares/guards");
-let pickerController = require("../controllers/picker.controller");
+let pickerController = require("../controllers/picker.admin.controller");
 let pickerValidation = require("../../validations/picker.validation")
 let checkAdminValidationError = require("../../middlewares/adminCheckValidationError");
 let uploader = require("../../middlewares/uploader")
 router.route("/")
     .get(
-        // adminGuard,
+        adminGuard,
         catchErrors(pickerController.index)
     )
     .post(
-        // adminGuard,
+        adminGuard,
         uploader.upload("image"),
         pickerValidation.validate("create"),
         checkAdminValidationError,
@@ -19,12 +19,12 @@ router.route("/")
     );
 
 router.get("/create", 
-    // adminGuard,
+    adminGuard,
     catchErrors(pickerController.create)
 );
 
 router.get("/:id",
-    // adminGuard,
+    adminGuard,
     catchErrors(pickerController.show)
 )
 

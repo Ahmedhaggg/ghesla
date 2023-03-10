@@ -1,3 +1,4 @@
+const { catchErrorOnCreate } = require("./errorsHandlers/database.error.handler");
 const { Customer, CustomerLoginVerification, Reservation, Service, Car, ReservationStatus, City } = require("../models");
 let FactoryService = require("./factory.service");
 exports.count = FactoryService.count(Customer)
@@ -44,4 +45,4 @@ exports.findVerificationCode = FactoryService.findOne(CustomerLoginVerification)
 
 exports.deleteVerificationCode = FactoryService.deleteOne(CustomerLoginVerification);
 
-exports.findAll = FactoryService.findAll(Customer)
+exports.findAll = FactoryService.findAll(Customer, null, { model: City})

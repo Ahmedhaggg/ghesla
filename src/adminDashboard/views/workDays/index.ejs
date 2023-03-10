@@ -1,0 +1,34 @@
+<%- include("../partials/header") %>
+<h2 class="text-center">ايام العمل</h2>
+
+<div class="table-responsive">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">الرقم</th>
+        <th scope="col">اليوم</th>
+        <th scope="col">التاريخ</th>
+        <th scope="col">اجازة</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% workDays.forEach(function(day, index) { %>
+      <tr>
+        <td class="py-3">
+          <a href="/dashboard/work-days/<%= day.dataValues.id %>" class="text-decoration-none text-primary"><%= index + 1 %></a>
+        </td>
+        <td class="py-3"><%= day.dataValues.name %></td>
+        <td class="py-3"><%= new Date(day.dataValues.date).toLocaleDateString("ar-EG") %></td>
+        <th scope="col"><%= day.dataValues.isHoliday? "اجازة" : "عمل" %></th>
+      <% }); %>
+      <!-- Add more rows as needed -->
+    </tbody>
+  </table>
+  <% if (!workDays.length) { %>
+    <p class="alert alert-info">لا توجد ايام عمل</p>
+  <% } %>
+
+</div>
+
+
+<%- include("../partials/footer") %>

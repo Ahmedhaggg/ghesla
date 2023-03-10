@@ -2,12 +2,13 @@ const { Op } = require("sequelize");
 const { RESERVATION_PENDING } = require("../config/constants");
 const { db } = require("../config/database");
 let { Picker, Reservation, WorkDay, WorkHour, ReservationStatus } = require("../models");
+const { catchErrorOnCreate } = require("./errorsHandlers/database.error.handler");
 let FactoryService = require("./factory.service");
 
 exports.create = async (pickerData, startWorkTime) => {
     let transaction = await db.transaction();
     try {
-        console.log(pickerData)
+        
         let newPicker = await Picker.create(pickerData, { transaction });
 
         let workDays = await WorkDay.findAll({ 
@@ -26,7 +27,7 @@ exports.create = async (pickerData, startWorkTime) => {
     } catch (error) {
         console.log(error)
         await transaction.rollback();
-        return null;
+        return catchErrorOnCreate(error);
     }
 }
 exports.findAll = async () => await Picker.findAll({
@@ -42,7 +43,7 @@ exports.findAll = async () => await Picker.findAll({
 // )
 
 exports.findOne = FactoryService.findOne(Picker, 
-    { exclude: ["password", "email"] },
+    { exclude: ["password"] },
     {
         model: Reservation,
         attributes: { include: ["id", "date", "amount"] },
@@ -54,4 +55,4 @@ exports.findOne = FactoryService.findOne(Picker,
 );
 
 
-exports.findLoginData = FactoryService.findOne(FactoryService, ["email", "password"]);
+exports.findLoginData = FactoryService.findOne(Picker, ["email", "password", "image", "name"]);

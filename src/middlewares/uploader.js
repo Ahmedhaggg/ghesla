@@ -37,4 +37,15 @@ exports.upload = (field) => multer({
     }
 }).single(field)
 
-exports.delete = async key => await s3.deleteObject({ Bucket: AWS_BUCKET, Key: key }).promise().then(() => console.log("deleted success")).catch(() => console.log("error"))
+exports.uploadTwoFields = (fieldOne, fieldTwo) => multer({
+    storage: multerS3Config,
+    fileFilter: fileFilter,
+    limits: {
+        fileSize: 1024 * 1024 * 5 // we are allowing only 5 MB files
+    }
+}).fields([
+    { name: fieldOne, maxCount: 1 },
+    { name: fieldTwo, maxCount: 1}
+])
+
+exports.delete = async key => await s3.deleteObject({ Bucket: AWS_BUCKET, Key: key }).promise().then(() => {}).catch(() => {})

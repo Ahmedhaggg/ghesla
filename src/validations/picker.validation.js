@@ -1,4 +1,7 @@
 let { check, body } = require("express-validator");
+const { isFile } = require("./customs/isFile");
+const { isNewDate } = require("./customs/isNotExpiredDate");
+const { passwordIsConfirmed } = require("./customs/passwordIsConfirmed");
 const messages = require("./messages");
 exports.validate = (method) => {
     let fields = [
@@ -28,20 +31,12 @@ exports.validate = (method) => {
                 check("confirmPassword")
                     .notEmpty()
                     .withMessage(messages.notEmpty)
-                    .custom((value, { req }) => {
-                        if (req.body.password !== value)
-                            throw new Error(messages.confirmPassword)
-                        return true;
-                    }),
+                    .custom(passwordIsConfirmed()),
                 check("startWorkAt")
                     .notEmpty()
                     .withMessage(messages.notEmpty)
-                    .custom(value => {
-                        if (value < new Date())
-                            throw new Error(messages.isExpiredDate)
-                        return true;
-                    })
-                    
+                    .custom(isNewDate()),
+                check("image").custom(isFile("image"))
             ];    
         case "login": 
             return [

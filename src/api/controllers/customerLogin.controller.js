@@ -73,16 +73,8 @@ exports.register = expressAsyncHandler(
         password = await hashing.hash(password);
 
         let birthDayDate = formatToDate(year, month, day);
-        console.log({
-            email, 
-            password,
-            name,
-            birthDay: birthDayDate,
-            phoneNumber, 
-            cityId,
-            gender
-        })
-        await customerService.create({
+        
+        let newCustomer = await customerService.create({
             email, 
             password,
             name,
@@ -92,6 +84,9 @@ exports.register = expressAsyncHandler(
             gender
         });
 
+        if (newCustomer.isFaild)
+            throw new APIError(errorsTypes.VALIDATION_ERROR, HttpStatusCode.BAD_REQUEST, newCustomer.message)
+
         res.status(HttpStatusCode.OK).json({
             success: true
         })
@@ -100,9 +95,9 @@ exports.register = expressAsyncHandler(
 exports.login = expressAsyncHandler(
     async (req, res, next) => {
         let loginData = req.body;
-        console.log(loginData)
+        
         let customer = await customerService.findLoginData({ phoneNumber: loginData.phoneNumber });
-        console.log(customer)
+    
         if (!customer)
             throw new APIError(
                 errorsTypes.BAD_REQUEST, 

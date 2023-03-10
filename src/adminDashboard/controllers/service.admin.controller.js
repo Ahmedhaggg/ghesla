@@ -75,15 +75,20 @@ exports.show = async (req, res, next) => {
     if (!service)
         return res.redirect("/dashboard/404")
 
+    let discountValidationErrors = req.flash("validationErrors");
     let lastDiscountValues = req.flash("lastValues")[0]
     let deleteDiscountError = req.flash("deleteDiscountError")[0]
     let updateDiscountError = req.flash("updateDiscountError")[0]
+    let createDiscountError = req.flash("createDiscountError")[0]
+    console.log(lastDiscountValues)
     res.render("services/show", {
         title: service.name,
         service,
         lastDiscountValues,
         deleteDiscountError,
-        updateDiscountError
+        updateDiscountError,
+        createDiscountError,
+        discountValidationErrors
     })
     
 }

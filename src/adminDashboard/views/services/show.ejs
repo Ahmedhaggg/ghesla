@@ -50,57 +50,74 @@
     </div>
   </div>
   <div>
-    <% if (service.servicesDiscount) { %>
-    <div class="d-flex justify-content-center mt-4 mb-3">
-      <div class="col">
-        <h5>الخصم</h5>
-      </div>
-      <div class="col">
-        <% /* delete discount */ %>
-        <form action="/dashboard/services/<%= service.dataValues.id %>/discount/<%= service.servicesDiscount.dataValues.id %>?_method=DELETE" method="post">
-          <input type="hidden" name="_method" value="DELETE">
-          <% if (deleteDiscountError) { %>
-          <p class="alert alert-danger"><%= deleteDiscountError %></p>
-          <% } %>
-          <button type="submit" class="btn btn-danger">حذف الخصم</button>
-        </form>
-      </div>
-    </div>
-    <form action="/dashboard/services/<%= service.dataValues.id %>/discount/<%= service.servicesDiscount.dataValues.id %>?_method=PUT" method="post">
-      <input type="hidden" name="_method" value="PUT">
-      <div class="mb-3">
-        <input type="datetime-local" class="form-control" id="discountCode" name="expirationAt" placeholder="انتهاء الخصم" <% if (lastDiscountValues.discount.expirationAt) { %> value="<%= lastDiscountValues.discount.expirationAt.toISOString().slice(0,16) %>" <% } else { %> value="<%= service.servicesDiscount.dataValues.expirationAt.toISOString().slice(0,16) %>" <% } %>>
-      </div>
-        <div class="mb-3">
-          <input type="number" class="form-control" id="discountCode" name="percentage" placeholder="نسبة الخصم" value="<%= lastDiscountValues?.discount?.percentage || service?.servicesDiscount?.dataValues?.percentage %>">
+  <% if (service.servicesDiscount) { %>
+      <div class="d-flex justify-content-center mt-4 mb-3">
+        <div class="col">
+          <h5>الخصم</h5>
         </div>
-      <% if (updateDiscountError) { %>
-        <p class="alert alert-danger"><%= updateDiscountError %></p>
-      <% } %>
-      <button type="submit" class="btn btn-primary"><%= service ? 'تعديل الخصم' : 'اضافة الخصم' %></button>
-      <% if (service) { %>
-        <form action="/dashboard/services/<%= service.dataValues.id %>/discount/update" method="post">
-          <div class="mb-3">
-            <input type="datetime-local" class="form-control" id="discountCode" name="expirationAt" placeholder="انتهاء الخصم" value="<%= lastDiscountValues?.discount?.expirationAt || service?.servicesDiscount?.dataValues?.expirationAt %>">
-          </div>
-          <div class="mb-3">
-            <input type="number" class="form-control" id="discountCode" name="percentage" placeholder="نسبة الخصم" value="<%= lastDiscountValues?.discount?.percentage || service?.servicesDiscount?.dataValues?.percentage %>">
-          </div>
-          <button type="submit" class="btn btn-primary">تعديل الخصم</button>
-        </form>
-      <% } else { %>
+        <div class="col">
+          <% /* delete discount */ %>
+          <form action="/dashboard/services/<%= service.dataValues.id %>/discount/<%= service.servicesDiscount.dataValues.id %>?_method=DELETE" method="post">
+            <input type="hidden" name="_method" value="DELETE">
+            <% if (deleteDiscountError) { %>
+            <p class="alert alert-danger"><%= deleteDiscountError %></p>
+            <% } %>
+            <button type="submit" class="btn btn-danger">حذف الخصم</button>
+          </form>
+        </div>
+      </div>
+      <form action="/dashboard/services/<%= service.dataValues.id %>/discount/<%= service.servicesDiscount.dataValues.id %>?_method=PUT" method="post">
+        <input type="hidden" name="_method" value="PUT">
+        <div class="mb-3">
+          <input type="datetime-local" class="form-control" id="discountCode" name="expirationAt" placeholder="انتهاء الخصم" 
+            value="<%= lastDiscountValues?.expirationAt || service.servicesDiscount.dataValues.expirationAt.toISOString().slice(0, 16) %>"
+          >
+        </div>
+        <% const expirationatError = discountValidationErrors.find(error => error.param === "expirationAt"); %>
+        <% if (expirationatError) { %>
+            <p class="alert alert-danger py-2"><%= expirationatError.msg %></p>
+        <% } %>
+        <div class="mb-3">
+          <input type="number" class="form-control" id="discountCode" name="percentage" placeholder="نسبة الخصم" 
+            value="<%= lastDiscountValues?.percentage || service.servicesDiscount.dataValues.percentage %>"
+          >
+        </div>
+        <% const percentageError = discountValidationErrors.find(error => error.param === "percentage"); %>
+        <% if (percentageError) { %>
+            <p class="alert alert-danger py-2"><%= percentageError.msg %></p>
+        <% } %>
+        <% if (updateDiscountError) { %>
+          <p class="alert alert-danger"><%= updateDiscountError %></p>
+        <% } %>
+        <button type="submit" class="btn btn-primary"><%= service ? 'تعديل الخصم' : 'اضافة الخصم' %></button>
+      </form>
+    <% } else { %>
         <h5 class="text-center mt-4 mb-3">اضافة الخصم</h5>
-        <form action="/dashboard/services/create/discount" method="post">
+        <form action="/dashboard/services/<%= service.dataValues.id %>/discount/store" method="post">
           <div class="mb-3">
-            <input type="datetime-local" class="form-control" id="discountCode" name="expirationAt" placeholder="انتهاء الخصم">
+            <input type="datetime-local" class="form-control" id="discountCode" name="expirationAt" placeholder="انتهاء الخصم"
+              value="<%= lastDiscountValues?.expirationAt || "" %>"  
+            >
           </div>
+          <% const expirationatError = discountValidationErrors.find(error => error.param === "expirationAt"); %>
+          <% if (expirationatError) { %>
+              <p class="alert alert-danger py-2"><%= expirationatError.msg %></p>
+          <% } %>
           <div class="mb-3">
-            <input type="number" class="form-control" id="discountCode" name="percentage" placeholder="نسبة الخصم">
+            <input type="number" class="form-control" id="discountCode" name="percentage" placeholder="نسبة الخصم"
+              value="<%= lastDiscountValues?.percentage || "" %>"
+            >
           </div>
+          <% const percentageError = discountValidationErrors.find(error => error.param === "percentage"); %>
+          <% if (percentageError) { %>
+              <p class="alert alert-danger py-2"><%= percentageError.msg %></p>
+          <% } %>
+          <% if (createDiscountError) { %>
+            <p class="alert alert-danger"><%= createDiscountError %></p>
+          <% } %>
           <button type="submit" class="btn btn-primary">اضافة خصم</button>
         </form>
-      <% } %>
-      <% } %>
+    <% } %>
 
   </div>
 </div>

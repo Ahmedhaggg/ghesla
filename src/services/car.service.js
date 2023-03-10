@@ -21,6 +21,6 @@ exports.create = async (car, customerId) => {
     let plate = car.plate ? 
         await CarPlate.create({carId: newCar.id, ...car.plate })  : null;
         
-    return { ...newCar.dataValues, plate};
+    return { ...newCar.dataValues, plate}; 
 }
 

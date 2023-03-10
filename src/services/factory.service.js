@@ -1,3 +1,4 @@
+const { catchErrorOnCreate } = require("./errorsHandlers/database.error.handler");
 
 exports.count = Model => async (query = {}) => await Model.count({ where: query });
 
@@ -12,8 +13,13 @@ exports.deleteOne = Model => async (id) => {
     return updatedItem[0] === 1 ? true : false;
 }
 
-exports.create = Model => async (newData) => await Model.create(newData);
-
+exports.create = Model => async (newData) =>  {
+    try {
+        return await Model.create(newData)
+    } catch (error) {
+        return catchErrorOnCreate(error)
+    }
+}
 exports.findOne = (Model, attributes = null, include = null) => async query => await Model.findOne({
     where: query,
     attributes,

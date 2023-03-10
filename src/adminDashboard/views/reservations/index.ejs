@@ -1,5 +1,5 @@
 <%- include("../partials/header") %>
-<h2 class="text-center">الجوزات</h2>
+<h2 class="text-center">الحجوزات</h2>
 <form action="/dashboard/reservations" method="get">
   <div class="input-group">
     <select class="form-select" id="inputGroupSelect04" aria-label="Example select with button addon" name="status">
@@ -42,11 +42,29 @@
       <!-- Add more rows as needed -->
     </tbody>
   </table>
-  <% if (reservations.length) { %>
+</div>
+<div class="mt-3">
+  <% if (numberOfReservations > 0) { %>
+    <% if (numberOfReservations > 10) { %>
+        <div class="d-flex justify-content-center">
+          <% const numberOfPages = Math.ceil(numberOfReservations / 10)  %>
+          <% const endPage = (page + 5) > numberOfPages ? numberOfPages : page + 5 %>
+          <div class="paginations">
+              <ul class="pagination">
+                  <li class="page-item<%= (page == 1) ? " disabled" : "" %>"><a class="page-link" href="/dashboard/reservations?status=<%= status %>&page=<%= page - 1 %>">السابق</a></li>
+                  <% for(let i = page; i <= endPage; i++) { %>
+                      <li class="page-item">
+                          <a class="page-link" href="/dashboard/reservations?status=<%= status %>&page=<%= i %>"><%= (i).toLocaleString('ar-EG');%></a>
+                      </li>
+                  <% } %>
+                  <li class="page-item<%= (numberOfPages > 1 && page < numberOfPages) ? "" : " disabled" %>"><a class="page-link" href="/dashboard/reservations?status=<%= status %>&page=<%= page + 1 %>">التالي</a></li>
+              </ul>
+          </div>
+        </div>
+    <% } %>
   <% } else { %>
-  <p class="alert alert-info"><%= status %> لا توجد حجوازات</p>
+    <p class="alert alert-info"><%= status %> لا توجد حجوازات</p>
   <% } %>
-
 </div>
 
 

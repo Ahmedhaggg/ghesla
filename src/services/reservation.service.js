@@ -1,4 +1,4 @@
-let { Reservation, ReservationStatus, ReservationAdditionalService, WorkHour, Service, Customer, Picker, Car } = require("../models");
+let { Reservation, ReservationStatus, ReservationAdditionalService, WorkHour, Service, Customer, Picker, Car, ReservationCompletion } = require("../models");
 let FactoryService = require("./factory.service");
 let {db} = require("../config/database");
 let messages = require("../api/error/errors.messages");
@@ -69,7 +69,7 @@ exports.create = async (reservationData, workHourId, reservationAdditionalServic
         
         
         let updateAvailablePlacesInWorkHour = await WorkHour.increment({ availablePlaces: -1}, { where: { id: workHourId }, transaction })
-        console.log(updateAvailablePlacesInWorkHour)
+        
         if (updateAvailablePlacesInWorkHour[0][1] !== 1) 
             throw new Error();
         
@@ -108,4 +108,17 @@ exports.addPickerToReservation = async (reservationId, pickerId) => {
         await transaction.rollback();
         return false;
     }
+}
+
+exports.completeReservation = async (reservationId, images) =>  {    
+    let reservationIsCompleted = await Reservation.update({ status: 3}, { where: { id: reservationId } });
+    if (reservationIsCompleted[0] !== 1)
+        return false;
+
+    await ReservationCompletion.create({
+        ...images,
+        reservationId
+    });
+    
+    return true;
 }

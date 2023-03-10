@@ -1,5 +1,6 @@
 const { DataTypes } = require("sequelize");
 let { db } = require("../config/database");
+let validationMessages = require("../validations/messages")
 
 let Picker = db.define("pickers", {
     id: {
@@ -16,11 +17,17 @@ let Picker = db.define("pickers", {
     phoneNumber: {
         type: DataTypes.STRING(20),
         allowNull: false,
-        unique: true
+        unique: true,
+        unique: {
+            msg: validationMessages.isUnique
+        }
     },
     email: {
         type: DataTypes.STRING(70),
-        allowNull: false
+        allowNull: false,
+        unique: {
+            msg: validationMessages.isUnique
+        }
     },
     image: {
         type: DataTypes.TEXT,
