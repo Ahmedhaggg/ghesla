@@ -90,27 +90,31 @@
         <div>
             <% if(reservation.status.dataValues.name === "في الانتظار") { %>
                 <h5 class="text-center mt-4 mb-3">اختار بايكر للحجز</h5>
-                <form action="/dashboard/reservations/<%= reservation.dataValues.id %>?_method=PUT" method="post">
-                    <input type="hidden" name="_method" value="PUT">
-                    <div class="input-group">
-                        <select class="form-select" name="pickerId">
-                            <% pickers.forEach(function(picker) { %>
-                                <option 
-                                    value="<%= picker.dataValues.id %>"
-                                    <% if(picker.dataValues.id === lastPickerChoosed) { %>
-                                        selected
-                                    <% } %>
-                                >
-                                    <%= picker.dataValues.name %>
-                                </option>
-                            <% }) %>
-                        </select>
-                        <button class="btn btn-primary" type="submit">حفظ</button>
-                        <% if(pickerNotAvailableError) { %>
-                            <p class="alert alert-danger"><%= pickerNotAvailableError %></p>
-                        <% } %>
-                    </div>
-                </form>
+                <% if (pickers.length === 0)  { %>
+                    <p class="alert alert-info">لا يوجد بايكرز متاحين لاكمال الحجز حاليا</p>
+                <% } else { %>
+                    <form action="/dashboard/reservations/<%= reservation.dataValues.id %>?_method=PUT" method="post">
+                        <input type="hidden" name="_method" value="PUT">
+                        <div class="input-group">
+                            <select class="form-select" name="pickerId">
+                                <% pickers.forEach(function(picker) { %>
+                                    <option 
+                                        value="<%= picker.dataValues.id %>"
+                                        <% if(picker.dataValues.id === lastPickerChoosed) { %>
+                                            selected
+                                        <% } %>
+                                    >
+                                        <%= picker.dataValues.name %>
+                                    </option>
+                                <% }) %>
+                            </select>
+                            <button class="btn btn-primary" type="submit">حفظ</button>
+                            <% if(pickerNotAvailableError) { %>
+                                <p class="alert alert-danger"><%= pickerNotAvailableError %></p>
+                            <% } %>
+                        </div>
+                    </form>
+                <% } %>
             <% } %>
         </div>
     </div>

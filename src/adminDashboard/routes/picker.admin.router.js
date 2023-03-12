@@ -12,7 +12,7 @@ router.route("/")
     )
     .post(
         adminGuard,
-        uploader.upload("image"),
+        uploader.saveUploadInMemory("image"),
         pickerValidation.validate("create"),
         checkAdminValidationError,
         catchErrors(pickerController.store)

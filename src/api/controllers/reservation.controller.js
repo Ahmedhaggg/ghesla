@@ -2,37 +2,36 @@ let reservationService = require("../../services/reservation.service");
 let serviceService = require("../../services/service.service");
 let FactoryController = require("./controllerFactory")
 let expressAsyncHandler = require("express-async-handler");
-const { calcServicesTax, calcServiceTax } = require("../../utils/serviceTax");
+const { calcServicesPrice, calcServicePrice} = require("../../utils/taxCalc");
 const APIError = require("../error/api.error");
 const InternalServerError = require("../error/internalServer.error");
 const errorsTypes = require("../error/errors.types");
 const HttpStatusCode = require("../error/httpStatusCode");
 let uploader = require("../../middlewares/uploader");
-const errorsMessages = require("../error/errors.messages");
 exports.show = FactoryController.findOne(reservationService, 'reservation')
 
-exports.create =   expressAsyncHandler(
+exports.create = expressAsyncHandler(
     async (req, res, next) => {
         let customerId = req.customer.customerId;
         let { serviceId, location, workHourId, carId, additionalServicesIds = null } = req.body;
-        let service = await serviceService.findOne({ id: serviceId });
-        let amount = +service.dataValues.price;
-        let tax = +calcServiceTax(service.dataValues.price);
+        let service = await serviceService.findServicePrice(serviceId);
+        let mainServiceAmount = calcServicePrice(service);
         
+        let additionalServicesPrices = 0;
         if (additionalServicesIds) {
             let additionalServices = await serviceService.findSomeServicesPrices(additionalServicesIds);
-            amount += additionalServices.reduce((total, current) => total + (+current.dataValues.price), [0] )
-            tax += +calcServicesTax(additionalServices); 
+            additionalServicesPrices = calcServicesPrice(additionalServices)
         }
-
+        
         let newReservation = await reservationService.create(
             { 
                 serviceId: service.id, 
-                location, amount: amount + tax, 
+                location, 
+                amount: mainServiceAmount + additionalServicesPrices, 
                 location, 
                 customerId,
                 carId,
-                status: 1
+                statusId: 1
             },
             workHourId,
             additionalServicesIds
@@ -45,27 +44,43 @@ exports.create =   expressAsyncHandler(
     }
 )
 
-exports.index = FactoryController.findAllByCustomerId(reservationService, "reservations", "findByCustomerId");
+exports.index = FactoryController.findAllByCustomerId(reservationService, "reservations");
 
 exports.update = expressAsyncHandler(
     async (req, res, next) => {
         let { id } = req.params;
-        let images = req.files.map(file => ({
-            [file.fieldname]: file.key
-        }));
+        let images = {
+            after: req.files["after"][0].key,
+            before: req.files["before"][0].key,
+        }
 
         let reservationIsCompleted = await reservationService.completeReservation(id, images);
 
         if (!reservationIsCompleted) {
-            await req.files.forEach(async file => {
-                await uploader.delete(file.key)
-            });
+            // await req.files.forEach(async file => {
+                await uploader.delete(req.files["after"][0].key)
+                await uploader.delete(req.files["before"][0].key)
+            // });
 
             throw new InternalServerError()
         }
 
         res.status(HttpStatusCode.OK).json({
             success: true
+        })
+    }
+)
+
+
+
+exports.findPickerReservations = expressAsyncHandler(
+    async (req, res, next) => {
+        let pickerId  = req.params.id;
+        let reservations = await reservationService.findAll({ pickerId, statusId: 2 });
+        
+        res.status(HttpStatusCode.OK).json({
+            success: true,
+            reservations
         })
     }
 )

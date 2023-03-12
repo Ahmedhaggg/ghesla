@@ -32,6 +32,8 @@ router
         reservationController.update
     )
 
-
-
+router.get("/pickers/:id",
+    guards.apiGuards("picker"),
+    reservationController.findPickerReservations
+)
 module.exports = router;

@@ -25,7 +25,6 @@ exports.create = async (pickerData, startWorkTime) => {
         await transaction.commit();
         return newPicker;
     } catch (error) {
-        console.log(error)
         await transaction.rollback();
         return catchErrorOnCreate(error);
     }
@@ -33,15 +32,11 @@ exports.create = async (pickerData, startWorkTime) => {
 exports.findAll = async () => await Picker.findAll({
     attributes: { exclude: ["password"] }
  })
-// exports.findAll = FactoryService.findAll(Picker, 
-//     { exclude: ["email", "password"] },
-//     [{ 
-//         required: false,
-//         model: Reservation,
-//         where: { status: "doing" }
-//     }]
-// )
 
+exports.findNotWorkingPickers = async () => await Picker.findAll({
+    where: { isWorking: false },
+    attributes: { include: ["id", "name"] }
+})
 exports.findOne = FactoryService.findOne(Picker, 
     { exclude: ["password"] },
     {
@@ -55,4 +50,5 @@ exports.findOne = FactoryService.findOne(Picker,
 );
 
 
-exports.findLoginData = FactoryService.findOne(Picker, ["email", "password", "image", "name"]);
+exports.findLoginData = FactoryService.findOne(Picker, ["id", "email", "password", "image", "name"]);
+

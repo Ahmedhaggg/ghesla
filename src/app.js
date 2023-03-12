@@ -41,7 +41,6 @@ app.use("/images", express.static(path.join(__dirname, 'adminDashboard', 'public
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'adminDashboard', 'views'));
 
-
 apiRoutes(app);
 adminRoutes(app);
 

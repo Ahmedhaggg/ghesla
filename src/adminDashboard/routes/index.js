@@ -7,7 +7,7 @@ let cityRoutes = require("./city.admin.router");
 let reservationRoutes = require("./reservation.admin.router");
 let customerRoutes = require("./customer.admin.router");
 let workDayRoutes = require("./workDay.admin.router");
-
+ 
 exports.adminRoutes = app => {
     app.use("/dashboard", indexRoutes)
     app.use("/dashboard", authRoutes);
@@ -20,10 +20,13 @@ exports.adminRoutes = app => {
     app.use("/dashboard/work-days", workDayRoutes);
     
     app.get("/dashboard/505", (req, res, next) => {
-        console.log("error")
-        res.render("505")
+        res.render("505", {
+            title: "خطا في السرفر"
+        })
     })
     app.get("/dashboard/404", (req, res, next) => {
-        res.render("404")
+        res.render("404", {
+            title: "الصفحة غير موجودة"
+        })
     })
 }

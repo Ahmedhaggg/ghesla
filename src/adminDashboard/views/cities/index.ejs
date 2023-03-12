@@ -9,17 +9,16 @@
             </tr>
         </thead>
         <tbody>
-            <% cities.forEach(city => { %>
+            <% cities.forEach((city, index) => { %>
                 <tr>
-                    <td class="py-3"><%= city.dataValues.id %></td>
+                    <td class="py-3"><%= index + 1 %></td>
                     <td class="py-3"><%= city.dataValues.name %></td>
                 </tr>
             <% }); %>
       <!-- Add more rows as needed -->
         </tbody>
     </table>
-    <% if (cities.length) { %>
-    <% } else { %>
+    <% if (!cities.length) { %>
         <p class="alert alert-info">لا يوجد مدن مضافة</p>        
     <% } %>
 </div>

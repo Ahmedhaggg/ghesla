@@ -49,6 +49,7 @@
                     <th scope="col">الموقع</th>
                     <th scope="col">موديل السيارة</th>
                     <th scope="col">لون السيارة</th>
+                    <th scope="col">الحالة</th>
                 </tr>
             </thead>
             <tbody>
@@ -62,6 +63,7 @@
                         <td class="py-3"><%= reservation.dataValues.location %></td>
                         <td class="py-3"><%= reservation.car.dataValues.model %></td>
                         <td class="py-3"><%= reservation.car.dataValues.color %></td>
+                        <th scope="col"><%= reservation.status.dataValues.name %></th>
                     </tr>
                 <% }); %>
             </tbody>

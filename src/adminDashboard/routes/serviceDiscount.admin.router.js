@@ -6,14 +6,14 @@ let serviceDiscountValidation = require("../../validations/serviceDiscount.valid
 let checkAdminValidationError = require("../../middlewares/adminCheckValidationError");
 
 router.post("/:serviceId/discount/store",
-    // adminGuard,
+    adminGuard,
     serviceDiscountValidation.validate("create"),
     checkAdminValidationError,
     catchErrors(serviceDiscountController.store)
 );
 
 router.put("/:serviceId/discount/:discountId",
-    // adminGuard, 
+    adminGuard, 
     serviceDiscountValidation.validate("update"),
     checkAdminValidationError,
     catchErrors(serviceDiscountController.update)

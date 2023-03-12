@@ -13,7 +13,9 @@ exports.index = async (req, res, next) => {
             status === RESERVATION_DOING || 
             status === RESERVATION_COMPLETED
         ) ? status : null;
-    let reservations = await reservationService.findAll(searchStatus, (page - 1) * 10, 10);
+
+    let numberOfSkiped = page ? (page - 1) * 10 : 0;
+    let reservations = await reservationService.findByStatusName(searchStatus,  numberOfSkiped, 10);
     let numberOfReservations = await reservationService.count(searchStatus);
     let statuses = await reservationsStatusService.findAll();
     res.render("reservations/index", {
@@ -35,7 +37,7 @@ exports.show = async (req, res, next) => {
         return res.redirect("/dashboard/404")
 
     let pickers = reservation.status.dataValues.name == RESERVATION_PENDING ? 
-        await pickerService.findAll({ isWorking: false })
+        await pickerService.findNotWorkingPickers()
         : null;
     
     let updateReservationError =  req.flash("updateReservationError")[0];

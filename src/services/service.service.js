@@ -17,16 +17,30 @@ exports.findAll = async (isAdditional = false, isUser = false) => await Service.
             model: ServiceDiscount,
             attributes: { exclude: "serviceId" }
         }
-    })
-exports.findSomeServicesPrices = async (ids) => Service.findAll({ 
-    where: { id: ids },
+    });
+
+exports.findServicePrice = async (id) => Service.findOne({ 
+    where: { id , isAdditional: false },
     attributes: { include: "price" },
-    raw: true
+    include: {
+        required: false,
+        model: ServiceDiscount,
+        attributes: { include: "percentage" }
+    }
+})
+exports.findSomeServicesPrices = async (ids, limit) => Service.findAll({ 
+    where: { id: ids, isAdditional: true },
+    attributes: { include: "price" },
+    include: {
+        required: false,
+        model: ServiceDiscount,
+        attributes: { include: "percentage" }
+    }
 })
 
 exports.create = async (serviceData, discountData) => {
     let newTransaction = await db.transaction();
-
+    
     try {
         let newService = await Service.create(serviceData, { transaction: newTransaction });
         let discount = discountData ? await ServiceDiscount.create({
@@ -40,6 +54,8 @@ exports.create = async (serviceData, discountData) => {
             discount
         }
     } catch (error) {
+
+        console.log(error)
         await newTransaction.rollback();
         return null;
     }

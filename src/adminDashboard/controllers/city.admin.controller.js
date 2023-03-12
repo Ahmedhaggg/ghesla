@@ -26,9 +26,9 @@ exports.store = async (req, res, next) => {
 
     let newCity = await cityService.create({ name });
 
-    if (!newCity) {
-        req.flash("lastValues", {name});
-        req.flash("createCityError", dashboardMessages.createCityError);
+    if (newCity.isFaild) {
+        req.flash("lastValues", { name });
+        req.flash("validationErrors", newCity.message);
         return res.redirect("/dashboard/cities/create")
     }
     

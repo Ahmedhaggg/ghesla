@@ -39,7 +39,9 @@ exports.login =  expressAsyncHandler(
         
         res.status(HttpStatusCode.OK).json({
             success: true, 
-            newAccessToken
+            newAccessToken,
+            picker
         })
     }
 )
+

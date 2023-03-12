@@ -19,7 +19,8 @@ exports.create = async (req, res, next) => {
 exports.store = async (req, res, next) => {
     let image = req.file.key;
     let { name, description, price, isAdditional, discount = null } = req.body;
-
+    discount = discount.pecentage && discount.expirationAt ? discount : null;
+    
     let newService = await serviceService.create({
         name, 
         description,
@@ -59,7 +60,7 @@ exports.update = async (req, res, next) => {
     let { id } = req.params;
 
     let updateService = await serviceService.update(id, serviceData)
-
+    console.log(updateService)
     if (!updateService) {
         req.flash("updateServiceError", DashboardErrorsMessages.updateServiceError)
         return res.redirect(`/dashboard/services/${id}/edit`)
@@ -80,7 +81,7 @@ exports.show = async (req, res, next) => {
     let deleteDiscountError = req.flash("deleteDiscountError")[0]
     let updateDiscountError = req.flash("updateDiscountError")[0]
     let createDiscountError = req.flash("createDiscountError")[0]
-    console.log(lastDiscountValues)
+    
     res.render("services/show", {
         title: service.name,
         service,

@@ -9,7 +9,7 @@
     <title><%= title %></title>
 </head>
 <body>
-    <% if (title !== "تسجيل الدخول") { %>
+    <% if (title !== "تسجيل الدخول" && title !== "الصفحة غير موجودة" && title !== "خطا في السرفر") { %>
         <%- include("./navbar") %>
     <% } %>
     <div class="container">

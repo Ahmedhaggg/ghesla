@@ -13,7 +13,7 @@ let Reservation = db.define("reservations", {
         allowNull: false
     },
     amount: {
-        type: DataTypes.DECIMAL(4, 2),
+        type: DataTypes.DECIMAL(6, 2),
         allowNull: false
     },
     date: {

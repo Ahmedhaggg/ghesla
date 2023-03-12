@@ -13,4 +13,4 @@ router.post("/login",
     adminCheckValidationError, 
     catchErrors(authController.login)
 )
-module.exports = router
+module.exports = router;

@@ -14,7 +14,7 @@ exports.count = async (status = null) => await Reservation.count({
 });
 
 // exports.findAll = FactoryService.findAll(Reservation, null, [{ model: Customer }, { model: ReservationStatus }] );
-exports.findAll = async (status = null) => await Reservation.findAll({ 
+exports.findByStatusName = async (status = null, offset = 0, limit= 10) => await Reservation.findAll({ 
     attributes: { exclude: ["statusId"]},
     include: [
         {
@@ -30,14 +30,17 @@ exports.findAll = async (status = null) => await Reservation.findAll({
             model: Service,
             attributes: { include: "name" }
         }
-    ]
+    ],
+    offset
 })
 
-exports.findByCustomerId = FactoryService.findAll(Reservation, { exclude: ["status"]}, [
+exports.findAll = FactoryService.findAll(Reservation, { exclude: ["statusId"]}, [
     { model: ReservationStatus, attributes: ["name"], as: "status" },
     { required: true, model: Car },
     { required: true, model: Service }
 ])
+
+
 exports.findOne = FactoryService.findOne(Reservation,
     null,
     [
@@ -79,6 +82,7 @@ exports.create = async (reservationData, workHourId, reservationAdditionalServic
             newReservation : { ...newReservation, newReservationAdditionalServices }
         };
     } catch(err) {
+        
         let errorMessage = err.error === "notAvailableWorkPlaces" ? messages.notAvailableHourWork : messages.createReservationError
         await transaction.rollback();
         return { success: false, message: errorMessage }
@@ -97,21 +101,22 @@ exports.addPickerToReservation = async (reservationId, pickerId) => {
         if (reservationIsUpdated[0] == 0)
             throw new Error();
         
-        let pickerIsUpdated = await Picker.update({ isWorking: true }, { where: { id: pickerId }});
-
-        if (pickerIsUpdated[0] == false)
+        let pickerIsUpdated = await Picker.update({ isWorking: true }, { where: { id: pickerId }, transaction });
+        console.log(pickerIsUpdated)
+        if (pickerIsUpdated[0] !== 1)
             throw new Error();
 
         await transaction.commit();
         return true;
     } catch(error) {
+        console.log(error)
         await transaction.rollback();
         return false;
     }
 }
 
 exports.completeReservation = async (reservationId, images) =>  {    
-    let reservationIsCompleted = await Reservation.update({ status: 3}, { where: { id: reservationId } });
+    let reservationIsCompleted = await Reservation.update({ statusId: 3}, { where: { id: reservationId } });
     if (reservationIsCompleted[0] !== 1)
         return false;
 

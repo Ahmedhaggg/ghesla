@@ -24,7 +24,7 @@ exports.validate = (method) => {
                 .withMessage(messages.passwordMinLength)
                 .matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[a-zA-Z\d@$.!%*#?&]/,)
                 .withMessage(messages.weekPassword),
-            passwordIsConfirmed(),
+            check("confirmPassword").custom(passwordIsConfirmed()),
             check("name")
                 .notEmpty()
                 .withMessage(messages.notEmpty),

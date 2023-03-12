@@ -8,25 +8,24 @@
                 <% } %>
                 value="true">اضافية</option>
             <option value="false"
-                <% if (isAdditional) { %>
-                    <% } else { %>
+                <% if (!isAdditional) { %>
                         selected
                     <% } %>
-                    >اساسية</option>
-            </select>
-            <button class="btn btn-primary" type="submit">فلتر حسب نوغ الخدمة</button>
-        </div>
-    </form>
-    <h3 class="text-center mt-5 mb-3">
-        <% if (isAdditional) { %>
-            الخدمات الاضافية
-        <% } else { %>
-            الخدمات
-        <% } %>
-    </h3>
-    <div class="table-responsive">
-        <table class="table table-striped">
-            <thead>
+            >اساسية</option>
+        </select>
+        <button class="btn btn-primary" type="submit">فلتر حسب نوغ الخدمة</button>
+    </div>
+</form>
+<h3 class="text-center mt-3 mb-3">
+    <% if (isAdditional) { %>
+        الخدمات الاضافية
+    <% } else { %>
+        الخدمات
+    <% } %>
+</h3>
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
             <tr>
                 <th scope="col">الاسم</th>
                 <th scope="col">السعر</th>
@@ -63,8 +62,7 @@
       
         </tbody>
     </table>
-    <% if (services.length) { %>
-    <% } else { %>
+    <% if (!services.length) { %>
         <p class="alert alert-info">لا توجد خدمات مضافة</p>        
     <% } %>
 </div>

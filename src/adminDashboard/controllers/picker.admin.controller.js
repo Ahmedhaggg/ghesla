@@ -1,8 +1,8 @@
 let pickerService = require("../../services/picker.service");
 const hashing = require("../../utils/hashing");
 let pagesTitles = require("../messages/pages.title");
-let dashboardMessages = require("../messages/dashboard.messages");
 const uploader = require("../../middlewares/uploader");
+
 exports.index = async (req, res, next) => {
     let pickers = await pickerService.findAll();
     
@@ -37,20 +37,13 @@ exports.create = async (req, res, next) => {
 }
 
 exports.store = async (req, res, next) => {
-    if (!req.file) {
-        req.flash("validationErrors", [ {
-            msg: dashboardMessages.noFileUploaded,
-            param: "image",
-            location: "body",
-            value: null
-        } ]);
-        return res.redirect("/dashboard/services/create");
-    }
-    let image = req.file.key;
+    let image = req.file.originalname;
+    let buffer = req.file.buffer;
+    
     let { email, password, confirmPassword, name, phoneNumber, startWorkAt } = req.body;
 
     let hashedPassword = await hashing.hash(password);
-
+    
     let startWorkAtDate = new Date(startWorkAt);
     let newPicker = await pickerService.create({
         email,
@@ -59,14 +52,16 @@ exports.store = async (req, res, next) => {
         phoneNumber,
         image
     }, new Date(startWorkAtDate.getFullYear(), startWorkAtDate.getMonth(), startWorkAtDate.getDate()));
- 
+    
     if (newPicker.isFaild) {
         req.flash("validationErrors", newPicker.message);
         req.flash("lastValues", { email, name, phoneNumber, startWorkAt, password, confirmPassword });
         await uploader.delete(image);
         return res.redirect(`/dashboard/pickers/create`)
     }
-
+    
+    await uploader.uploadFromMemory(image, buffer);
+       
     return res.redirect(`/dashboard/pickers/${newPicker.dataValues.id}`);
 }
 

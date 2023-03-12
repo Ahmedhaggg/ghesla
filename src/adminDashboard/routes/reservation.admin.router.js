@@ -4,17 +4,17 @@ const { adminGuard } = require("../../middlewares/guards");
 let reservationController = require("../controllers/reservation.admin.controller");
 
 router.get("/", 
-    // adminGuard,
+    adminGuard,
     catchErrors(reservationController.index)
 );
 
 router.get("/:id",
-    // adminGuard,
+    adminGuard,
     catchErrors(reservationController.show)
 );
 
 router.put("/:id", 
-    // adminGuard,
+    adminGuard,
     catchErrors(reservationController.update)
 );
 

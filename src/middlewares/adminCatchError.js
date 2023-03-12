@@ -3,5 +3,6 @@ exports.catchErrors = (controller) =>
     Promise
     .resolve(controller(req, res, next))
     .catch((err) => {
+        console.log(err)
         res.redirect("/dashboard/505")
     })

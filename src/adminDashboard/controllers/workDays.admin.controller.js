@@ -2,17 +2,14 @@ let workTimeService = require("../../services/workTime.service");
 let PagesTitles = require("../messages/pages.title");
 
 exports.index = async (req, res, next) => {
-    console.log("work days")
-    try {
-        let workDays = await workTimeService.findAll();
-        
-        res.render("workDays/index", {
-            title: PagesTitles.WORKDAYS,
-            workDays
-        })   
-    } catch (error) {
-        console.log(error)
-    }
+    
+    let workDays = await workTimeService.findAll();
+    
+    res.render("workDays/index", {
+        title: PagesTitles.WORKDAYS,
+        workDays
+    })   
+    
 }
 
 exports.show = async (req, res, next) => {
