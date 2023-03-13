@@ -31,7 +31,9 @@ exports.findByStatusName = async (status = null, offset = 0, limit= 10) => await
             attributes: { include: "name" }
         }
     ],
-    offset
+    offset,
+    limit,
+    order: [["date", "ASC"]]
 })
 
 exports.findAll = FactoryService.findAll(Reservation, { exclude: ["statusId"]}, [
@@ -53,8 +55,8 @@ exports.findOne = FactoryService.findOne(Reservation,
         },
         { required: true, model: ReservationStatus, as: "status" },
         { required: true, model: Car },
-        { model: Picker, attributes: { include: ["id", "name"]}}
-
+        { model: Picker, attributes: { include: ["id", "name"]}},
+        { model: ReservationCompletion, attributes: { exclude: ["id"] }, as: "images"}
     ]
 );
 exports.create = async (reservationData, workHourId, reservationAdditionalServices) => {
@@ -82,7 +84,7 @@ exports.create = async (reservationData, workHourId, reservationAdditionalServic
             newReservation : { ...newReservation, newReservationAdditionalServices }
         };
     } catch(err) {
-        
+        console.log(err)
         let errorMessage = err.error === "notAvailableWorkPlaces" ? messages.notAvailableHourWork : messages.createReservationError
         await transaction.rollback();
         return { success: false, message: errorMessage }
@@ -115,15 +117,32 @@ exports.addPickerToReservation = async (reservationId, pickerId) => {
     }
 }
 
-exports.completeReservation = async (reservationId, images) =>  {    
-    let reservationIsCompleted = await Reservation.update({ statusId: 3}, { where: { id: reservationId } });
-    if (reservationIsCompleted[0] !== 1)
-        return false;
+exports.completeReservation = async (reservationId, images, pickerId) =>  {    
+    let transaction = await db.transaction();
+    try {
+        let reservationIsCompleted = await Reservation.update(
+            { statusId: 3}, 
+            { where: { id: reservationId }, transaction }
+        );
+        
+        if (reservationIsCompleted[0] !== 1)
+            throw new Error();
 
-    await ReservationCompletion.create({
-        ...images,
-        reservationId
-    });
-    
-    return true;
+        await ReservationCompletion.create({
+            ...images,
+            reservationId
+        }, { transaction });
+        
+        let pickerIsUpdated = await Picker.update({ isWorking: false }, { where: { id: pickerId }, transaction });
+        
+        if (pickerIsUpdated[0] !== 1)
+            throw new Error();
+        await transaction.commit();
+
+        return true;
+    } catch (err) {
+        console.log(err)
+        await transaction.rollback();
+        return false;
+    }
 }

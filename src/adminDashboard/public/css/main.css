@@ -14,3 +14,10 @@ html {
 /* .login-page input::placeholder {
     direction: ltr;
 } */
+
+.pagnation-active-item {
+    z-index: 2;
+    color: #0a58ca;
+    background-color: #e9ecef;
+    border-color: #dee2e6;
+}

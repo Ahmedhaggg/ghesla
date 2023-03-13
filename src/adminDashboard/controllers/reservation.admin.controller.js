@@ -3,28 +3,33 @@ let pickerService = require("../../services/picker.service");
 let reservationsStatusService = require("../../services/reservationsStatus.service")
 let pagesTitles = require("../messages/pages.title");
 let dashboardMessages = require("../messages/dashboard.messages");
-const { RESERVATION_PENDING, RESERVATION_DOING, RESERVATION_COMPLETED } = require("../../config/constants");
+const { RESERVATION_PENDING, RESERVATION_DOING, RESERVATION_COMPLETED, ALL_RESERVATIONS } = require("../../config/constants");
 
 exports.index = async (req, res, next) => {
-    let { status, page } = req.query;
+    let { status, page = 1 } = req.query;
     
     let searchStatus = (
             status === RESERVATION_PENDING || 
             status === RESERVATION_DOING || 
             status === RESERVATION_COMPLETED
         ) ? status : null;
-
+    
     let numberOfSkiped = page ? (page - 1) * 10 : 0;
+    
     let reservations = await reservationService.findByStatusName(searchStatus,  numberOfSkiped, 10);
     let numberOfReservations = await reservationService.count(searchStatus);
     let statuses = await reservationsStatusService.findAll();
+    
+    if (page > 1 && reservations.length == 0)  
+        return res.redirect("/dashboard/404")
+
     res.render("reservations/index", {
         title: pagesTitles.RESERVATIONS,
         page: parseInt(page),
         reservations,
         numberOfReservations,
         statuses,
-        status
+        status: status || ALL_RESERVATIONS
     })
 }
 

@@ -4,7 +4,8 @@ exports.index = async (req, res, next) => {
     let { page = 1 } = req.query;
     let customers = await customerService.findAll(null, ( page - 1) * 10, 10);
     let numberOfCustomers = await customerService.count();
-    
+    if (page > 1 && customers.length == 0)  
+        return res.redirect("/dashboard/404")
     res.render("customers/index", {
         title: pageTitles.CUSTOMERS,
         customers,

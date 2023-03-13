@@ -8,9 +8,13 @@ const apiNotFoundMiddleware = require("./middlewares/apiNotFoundMiddleware");
 const { adminRoutes } = require("./adminDashboard/routes");
 const cookieParser = require("cookie-parser");
 const session = require("cookie-session");
-let flash = require("connect-flash")
+let flash = require("connect-flash");
+// const { dashboardLimiter, apiLimiter } = require("./config/rateLimiting");
 let app = express();
 
+
+// app.use("/dashboard", dashboardLimiter)
+// app.use("/api", apiLimiter)
 
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())

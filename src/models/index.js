@@ -56,10 +56,10 @@ ServiceDiscount.belongsTo(Service)
 Reservation.belongsToMany(Service, { through: ReservationAdditionalService });
 Service.belongsToMany(Reservation, { through: ReservationAdditionalService });
 
-Reservation.hasOne(ReservationCompletion, { foreignKey: "reservationId" })
-ReservationCompletion.belongsTo(Reservation, { as: "images" })
+Reservation.hasOne(ReservationCompletion, { foreignKey: "reservationId", as: 'images' })
+ReservationCompletion.belongsTo(Reservation, { foreignKey: "reservationId", as: "reservation" })
 
-// realtion between reservationHour and ReservationDay
+// realtion between reservationHour and ReservationDay 
 WorkDay.hasMany(WorkHour, { foreignKey: "workDayId", onDelete: 'cascade', hooks:true });
 WorkHour.belongsTo(WorkDay)
 

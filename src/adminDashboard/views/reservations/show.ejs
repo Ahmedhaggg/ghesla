@@ -116,6 +116,21 @@
                     </form>
                 <% } %>
             <% } %>
+            <% if (reservation.images) { %>
+                <div class="mt-5">
+                    <p class="text-center fs-2 mb-3">صور السيارة قبل وبعد الحجز</p>
+                    <div class="row">
+                        <div class="col-6">
+                            <p class="text-center fs-3">قبل</p>
+                            <img src="https://tvp-system.s3.amazonaws.com/<%= reservation.images.dataValues.before %>" alt="before" width="100%" height="250px">
+                        </div>
+                        <div class="col-6">
+                            <p class="text-center fs-3">بعد</p>
+                            <img src="https://tvp-system.s3.amazonaws.com/<%= reservation.images.dataValues.after %>" alt="after" width="100%" height="250px">
+                        </div>
+                    </div>
+                </div>
+            <% } %>
         </div>
     </div>
 </div>

@@ -32,11 +32,12 @@
         <% if (numberOfCustomers > 10) { %>
             <% const numberOfPages = Math.ceil(numberOfCustomers / 10)  %>
             <% const endPage = (page + 5) > numberOfPages ? numberOfPages : page + 5 %>
+            <% const startPage = (page - 3) <= 0 ? 1 : page - 3 %>
             <div class="d-flex justify-content-center">
                 <div class="paginations">
                     <ul class="pagination">
                         <li class="page-item<%= (page == 1) ? " disabled" : "" %>"><a class="page-link" href="/dashboard/customers?page=<%= page - 1 %>">السابق</a></li>
-                        <% for(let i = page; i <= endPage; i++) { %>
+                        <% for(let i = startPage; i <= endPage; i++) { %>
                             <li class="page-item">
                                 <a class="page-link" href="/dashboard/customers?page=<%=i%>"><%= (i).toLocaleString('ar-EG');%></a>
                             </li>

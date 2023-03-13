@@ -23,6 +23,7 @@
     "express": "^4.18.2",
     "express-async-handler": "^1.2.0",
     "express-handlebars": "^6.0.7",
+    "express-rate-limit": "^6.7.0",
     "express-session": "^1.17.3",
     "express-validator": "^6.14.3",
     "infobip": "^0.1.0",

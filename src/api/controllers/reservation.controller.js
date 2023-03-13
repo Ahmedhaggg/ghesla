@@ -48,19 +48,18 @@ exports.index = FactoryController.findAllByCustomerId(reservationService, "reser
 
 exports.update = expressAsyncHandler(
     async (req, res, next) => {
+        let pickerId  = req.picker.pickerId;
         let { id } = req.params;
         let images = {
             after: req.files["after"][0].key,
             before: req.files["before"][0].key,
         }
 
-        let reservationIsCompleted = await reservationService.completeReservation(id, images);
+        let reservationIsCompleted = await reservationService.completeReservation(id, images, pickerId);
 
         if (!reservationIsCompleted) {
-            // await req.files.forEach(async file => {
-                await uploader.delete(req.files["after"][0].key)
-                await uploader.delete(req.files["before"][0].key)
-            // });
+            await uploader.delete(req.files["after"][0].key)
+            await uploader.delete(req.files["before"][0].key)
 
             throw new InternalServerError()
         }

@@ -1,8 +1,9 @@
 <%- include("../partials/header") %>
 <h2 class="text-center mt-5 mb-3">الحجوزات</h2>
-<form action="/dashboard/reservations" method="get">
+<form action="/dashboard/reservations" method="get" class="mb-2">
   <div class="input-group">
     <select class="form-select" id="inputGroupSelect04" aria-label="Example select with button addon" name="status">
+      <option value="كل الحجوزات" <% if (status === "كل الحجوزات") { %> selected <% } %>>كل الحجوزات</option>
       <% statuses.forEach(function(statusObj) { %>
       <option value="<%= statusObj.dataValues.name %>" <% if (status === statusObj.dataValues.name) { %> selected <% } %>><%= statusObj.dataValues.name %></option>
       <% }); %>
@@ -21,6 +22,7 @@
         <th scope="col">اسم الزبون</th>
         <th scope="col">رقم هاتف الزبون</th>
         <th scope="col">الخدمة الاساسية</th>
+        <th scope="col">الحالة</th>
       </tr>
     </thead>
     <tbody>
@@ -37,6 +39,7 @@
         </td>
         <td class="py-3"><%= reservation.customer.dataValues.phoneNumber %></td>
         <td class="py-3"><%= reservation.service.dataValues.name %></td>
+        <td class="py-3"><%= reservation.status.dataValues.name %></td>
       </tr>
       <% }); %>
       <!-- Add more rows as needed -->
@@ -48,13 +51,15 @@
     <% if (numberOfReservations > 10) { %>
         <div class="d-flex justify-content-center">
           <% const numberOfPages = Math.ceil(numberOfReservations / 10)  %>
+          <% const startPage = (page - 3) <= 0  ? 1 : page - 3 %>
           <% const endPage = (page + 5) > numberOfPages ? numberOfPages : page + 5 %>
+        
           <div class="paginations">
               <ul class="pagination">
                   <li class="page-item<%= (page == 1) ? " disabled" : "" %>"><a class="page-link" href="/dashboard/reservations?status=<%= status %>&page=<%= page - 1 %>">السابق</a></li>
-                  <% for(let i = page; i <= endPage; i++) { %>
+                  <% for(let i = startPage; i <= endPage; i++) { %>
                       <li class="page-item">
-                          <a class="page-link" href="/dashboard/reservations?status=<%= status %>&page=<%= i %>"><%= (i).toLocaleString('ar-EG');%></a>
+                          <a class="page-link<% page == i ? " pagnation-active-item" : ""  %>" href="/dashboard/reservations?status=<%= status %>&page=<%= i %>"><%= (i).toLocaleString('ar-EG');%></a>
                       </li>
                   <% } %>
                   <li class="page-item<%= (numberOfPages > 1 && page < numberOfPages) ? "" : " disabled" %>"><a class="page-link" href="/dashboard/reservations?status=<%= status %>&page=<%= page + 1 %>">التالي</a></li>
@@ -63,7 +68,7 @@
         </div>
     <% } %>
   <% } else { %>
-    <p class="alert alert-info"><%= status %> لا توجد حجوازات</p>
+    <p class="alert alert-info">لا توجد حجوازات <%= status %></p>
   <% } %>
 </div>
 
