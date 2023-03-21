@@ -24,7 +24,7 @@ exports.create = expressAsyncHandler(
         });
 
         if (!newGift.success)
-            throw new APIError(errorsTypes.BAD_REQUEST, httpstatusCode.BAD_REQUEST, errorsMessages.message);
+            throw new APIError(errorsTypes.BAD_REQUEST, httpstatusCode.BAD_REQUEST, newGift.message);
 
         res.status(httpstatusCode.OK).json({
             success: true,

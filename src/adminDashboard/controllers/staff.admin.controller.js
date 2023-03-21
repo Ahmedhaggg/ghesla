@@ -24,18 +24,17 @@ exports.create = async (req, res, next) => {
 
 exports.store = async (req, res, next) => {    
     let { password, name, phoneNumber, confirmPassword } = req.body;
-
-    let hashedPassword = await hashing.hash(password);
     
     let newStaff = await staffService.create({
         password: hashedPassword,
         name,
         phoneNumber
     });
+
     if (newStaff.isFaild) {
         req.flash("validationErrors", newStaff.message);
         req.flash("lastValues", { password, name, phoneNumber, confirmPassword });
         return res.redirect(`/dashboard/staff/create`)
     }
-    return res.redirect(`/dashboard/staff/${newStaff.dataValues.id}`);
+    return res.redirect(`/dashboard/staff`);
 }
