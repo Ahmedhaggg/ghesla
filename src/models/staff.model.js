@@ -1,6 +1,7 @@
 const { DataTypes } = require("sequelize");
 let { db } = require("../config/database");
 let validationMessages = require("../validations/messages")
+const  hashing = require("../utils/hashing");
 
 let Staff = db.define("staff", {
     id: {
@@ -34,7 +35,13 @@ let Staff = db.define("staff", {
         defaultValue: false
     }
 }, {
-    timestamps: false
+    timestamps: false,
+    hooks: {
+        beforeCreate: async (admin) => {
+          const hashedPassword = await hashing.hash(admin.password);
+          admin.password = hashedPassword;
+        }
+    }
 });
 
 

@@ -13,7 +13,7 @@ exports.showLogin = async (req, res, next) => {
     })
     // validationErrors: validationErrors.length == 0 ? null : validationErrors
 }
-
+ 
 
 exports.login = async (req, res, next) => {
     let { email, password } = req.body;

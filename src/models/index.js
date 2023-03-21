@@ -1,4 +1,3 @@
-const Admin = require("./admin.mode");
 const Car = require("./car.model");
 const CarPlate = require("./carPlate.model");
 const Customer = require("./customer.model");
@@ -81,7 +80,6 @@ Gift.belongsTo(Customer, { foreignKey: "senderId" })
 Gift.belongsTo(Customer, { foreignKey: "recieverId" })
 
 module.exports = {
-    Admin, 
     Customer,
     CustomerLoginVerification,
     Car,
