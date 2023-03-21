@@ -19,7 +19,7 @@ exports.index = async (req, res, next) => {
     let reservations = await reservationService.findByStatusName(searchStatus,  numberOfSkiped, 10);
     let numberOfReservations = await reservationService.count(searchStatus);
     let statuses = await reservationsStatusService.findAll();
-    console.log(reservations[0].services[0].dataValues)
+
     if (page > 1 && reservations.length == 0)  
         return res.redirect("/dashboard/404")
 
