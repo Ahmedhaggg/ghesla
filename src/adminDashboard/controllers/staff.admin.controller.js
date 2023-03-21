@@ -26,7 +26,7 @@ exports.store = async (req, res, next) => {
     let { password, name, phoneNumber, confirmPassword } = req.body;
     
     let newStaff = await staffService.create({
-        password: hashedPassword,
+        password,
         name,
         phoneNumber
     });

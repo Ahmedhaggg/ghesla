@@ -9,11 +9,11 @@ let Gift = db.define("gifts", {
         allowNull: false
     },
     message: {
-        type: DataTypes.STRING(20),
+        type: DataTypes.STRING(100),
         allowNull: false
     },
     amount: {
-        type: DataTypes.STRING(100),
+        type: DataTypes.INTEGER,
         allowNull: false
     }
 }, {
