@@ -37,7 +37,6 @@ exports.findAll = FactoryService.findAll(Reservation, { exclude: ["statusId"]}, 
     { model: ReservationStatus, attributes: ["name"], as: "status" },
     { required: true, model: Car },
     { 
-        required: true, 
         model: Service, 
         attributes: ["id", "name", "image", "isAdditional"], 
     }
@@ -49,7 +48,6 @@ exports.findOne = FactoryService.findOne(Reservation,
     [
         { required: true, model: Customer },
         { 
-            required: true, 
             model: Service, 
             attributes: ["id", "name", "image", "isAdditional"], 
         },

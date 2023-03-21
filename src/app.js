@@ -52,5 +52,7 @@ adminRoutes(app);
 app.use(apiErrorHandlerMiddleware); 
 app.use(apiNotFoundMiddleware);
 
+let rService = require("./services/reservation.service");
+rService.findAll({}).then(el => console.log(el));
 app.listen(4000, () => console.log("server is ruuning"));
   
