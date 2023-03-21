@@ -13,10 +13,10 @@ exports.validate = (method) => {
                 check("location")
                     .notEmpty()
                     .withMessage(messages.notEmpty),
-                check("additionalServiceId")
+                check("additionalServicesIds")
                     .optional()
-                    .isArray({ min: 1, max: 3})
-                    .withMessage(messages.arrayLength),
+                    .isArray({ min: 0, max: 3 })
+                    .withMessage(messages.arrayLength(0, 3)),
                 check("carId")
                     .notEmpty()
                     .withMessage(messages.notEmpty),
@@ -24,6 +24,9 @@ exports.validate = (method) => {
                     .optional()
                     .isArray()
                     .withMessage(messages.isArray),
+                check("paymentMethod")
+                    .notEmpty()
+                    .withMessage(messages.notEmpty)
             ];
         case "complete":
             return [

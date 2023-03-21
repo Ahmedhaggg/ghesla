@@ -1,9 +1,7 @@
-let { Reservation, ReservationStatus, ReservationAdditionalService, WorkHour, Service, Customer, Picker, Car, ReservationCompletion } = require("../models");
+let { Reservation, ReservationStatus, ReservationService, WorkHour, Service, Customer, Picker, Car, ReservationCompletion, Balance } = require("../models");
 let FactoryService = require("./factory.service");
 let {db} = require("../config/database");
-let messages = require("../api/error/errors.messages");
-const APIError = require("../api/error/api.error");
-const HttpStatusCode = require("../api/error/httpStatusCode");
+const { RESERVATION_COMPLETED_ID } = require("../config/constants");
 exports.count = async (status = null) => await Reservation.count({
     include: {
         required: true,
@@ -12,8 +10,7 @@ exports.count = async (status = null) => await Reservation.count({
         where: status ? { name: status} : null
     }
 });
-
-// exports.findAll = FactoryService.findAll(Reservation, null, [{ model: Customer }, { model: ReservationStatus }] );
+ 
 exports.findByStatusName = async (status = null, offset = 0, limit= 10) => await Reservation.findAll({ 
     attributes: { exclude: ["statusId"]},
     include: [
@@ -28,18 +25,22 @@ exports.findByStatusName = async (status = null, offset = 0, limit= 10) => await
         },
         {
             model: Service,
-            attributes: { include: "name" }
+            attributes: ["id", "name"],
+            where: { isAdditional: false }
         }
     ],
     offset,
     limit,
     order: [["date", "ASC"]]
 })
-
 exports.findAll = FactoryService.findAll(Reservation, { exclude: ["statusId"]}, [
     { model: ReservationStatus, attributes: ["name"], as: "status" },
     { required: true, model: Car },
-    { required: true, model: Service }
+    { 
+        required: true, 
+        model: Service, 
+        attributes: ["id", "name", "image", "isAdditional"], 
+    }
 ])
 
 
@@ -50,8 +51,7 @@ exports.findOne = FactoryService.findOne(Reservation,
         { 
             required: true, 
             model: Service, 
-            attributes: ["name", "image", "isAdditional"], 
-            where: { isAdditional: false} 
+            attributes: ["id", "name", "image", "isAdditional"], 
         },
         { required: true, model: ReservationStatus, as: "status" },
         { required: true, model: Car },
@@ -59,37 +59,7 @@ exports.findOne = FactoryService.findOne(Reservation,
         { model: ReservationCompletion, attributes: { exclude: ["id"] }, as: "images"}
     ]
 );
-exports.create = async (reservationData, workHourId, reservationAdditionalServices) => {
-    const transaction = await db.transaction();
-    try {
-        const workHour = await WorkHour.findOne({ where: { id: workHourId }, raw: true });
-        if (!workHour || !workHour.availablePlaces || workHour.date < new Date()) throw new APIError("notAvailableWorkPlaces", HttpStatusCode.BAD_REQUEST, messages.notAvailableHourWork);
-        const newReservation = await Reservation.create({...reservationData, date: workHour.date }, { transaction });
-        const newReservationAdditionalServices = reservationAdditionalServices
-            ? await ReservationAdditionalService.bulkCreate(reservationAdditionalServices.map(additionalService => ({
-                    ...additionalService, 
-                    reservationId: newReservation.id 
-                })), { transaction })
-            : null;
-        
-        
-        let updateAvailablePlacesInWorkHour = await WorkHour.increment({ availablePlaces: -1}, { where: { id: workHourId }, transaction })
-        
-        if (updateAvailablePlacesInWorkHour[0][1] !== 1) 
-            throw new Error();
-        
-        await transaction.commit();
-        return { 
-            success: true,
-            newReservation : { ...newReservation, newReservationAdditionalServices }
-        };
-    } catch(err) {
-        console.log(err)
-        let errorMessage = err.error === "notAvailableWorkPlaces" ? messages.notAvailableHourWork : messages.createReservationError
-        await transaction.rollback();
-        return { success: false, message: errorMessage }
-    }
-}
+
 exports.addPickerToReservation = async (reservationId, pickerId) => {
     let transaction = await db.transaction();
     try {
@@ -104,7 +74,7 @@ exports.addPickerToReservation = async (reservationId, pickerId) => {
             throw new Error();
         
         let pickerIsUpdated = await Picker.update({ isWorking: true }, { where: { id: pickerId }, transaction });
-        console.log(pickerIsUpdated)
+        
         if (pickerIsUpdated[0] !== 1)
             throw new Error();
 
@@ -121,7 +91,7 @@ exports.completeReservation = async (reservationId, images, pickerId) =>  {
     let transaction = await db.transaction();
     try {
         let reservationIsCompleted = await Reservation.update(
-            { statusId: 3}, 
+            { statusId: RESERVATION_COMPLETED_ID}, 
             { where: { id: reservationId }, transaction }
         );
         

@@ -53,8 +53,9 @@ exports.verify = expressAsyncHandler(
                 HttpStatusCode.BAD_REQUEST, 
                 errorsMessages.invalidVerificationCode
             );
+            
         await customerService.deleteVerificationCode(customerVerificationCode.id)
-
+        
         let newAccessToken = await createJwtToken({
             role: "customer",
             customerId: customerVerificationCode.customerId
@@ -122,5 +123,21 @@ exports.login = expressAsyncHandler(
             success: true,
             newRandomVerificatioCode
         });
+    }
+)
+
+exports.profile = expressAsyncHandler(
+    async (req, res, next) => {
+        let { customerId } = req.customer;
+
+        let profile = await customerService.findCustomerProfileById(customerId);
+
+        if (!profile)
+            throw new APIError(errorsTypes.BAD_REQUEST, HttpStatusCode.BAD_REQUEST, errorsMessages.notfound);
+        
+        res.status(HttpStatusCode.OK).json({
+            success: true,
+            profile
+        })
     }
 )

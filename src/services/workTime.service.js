@@ -81,10 +81,11 @@ exports.saveNewDay = async (day) => {
         let numberOfPickers = await Picker.count({ transaction: newTransaction });
         let newDay = await WorkDay.create(day, { transaction: newTransaction })
         
-        if (newDay.isHoliday)
+        if (newDay.isHoliday) {
+            await newTransaction.commit();
             return;
-    
-        let hours = newDay.workHours.map(hour => ({ ...hour, availablePlaces: numberOfPickers, workDayId: newDay.id }));
+        }
+        let hours = day.workHours.map(hour => ({ ...hour, availablePlaces: numberOfPickers, workDayId: newDay.id }));
 
         await WorkHour.bulkCreate(hours, { transaction: newTransaction });
         await newTransaction.commit()
@@ -93,11 +94,12 @@ exports.saveNewDay = async (day) => {
     }
 }
 exports.getLatesttDay = async () => await WorkDay.findOne({ order: [["date", "DESC"]] })
+
 exports.deleteOldestDay = async () => {
     let day = await WorkDay.findOne({
         order: [
             ['date', 'ASC']
         ]
     }) 
-    await day.destroy()
+    await WorkDay.destroy({ where: { id: day.dataValues.id }});
 }

@@ -1,8 +1,20 @@
 const { catchErrorOnCreate } = require("./errorsHandlers/database.error.handler");
-const { Customer, CustomerLoginVerification, Reservation, Service, Car, ReservationStatus, City } = require("../models");
+const { Customer, CustomerLoginVerification, Reservation, Service, Car, ReservationStatus, City, Balance, Points } = require("../models");
 let FactoryService = require("./factory.service");
+const { db } = require("../config/database");
+ 
 exports.count = FactoryService.count(Customer)
 exports.findLoginData = FactoryService.findOne(Customer, ["id", "email", "password"], null);
+
+exports.findCustomerProfileById = async (id) => await Customer.findOne({
+    where: { id },
+    attributes: { exclude: "password" },
+    include: [
+        { model: Balance, attributes: { exclude: "customerId" }},
+        { model: Points, attributes: { exclude: "customerId" }}
+    ]
+})
+
 
 exports.findOne = FactoryService.findOne(Customer, null, [
     {
@@ -31,7 +43,31 @@ exports.findOne = FactoryService.findOne(Customer, null, [
     }
 ]);
 
-exports.create = FactoryService.create(Customer)
+exports.create = async customerData => {
+    let transaction = await db.transaction();
+
+    try {
+        const customer = await Customer.create(customerData, { transaction });
+      
+        await Balance.create({
+            customerId: customer.dataValues.id,
+            balance: 0
+        }, { transaction });
+
+        await Points.create({
+            customerId: customer.dataValues.id,
+            points: 0
+        }, { transaction });
+
+        await transaction.commit();
+
+        return true;
+    } catch(error) {
+        await transaction.rollback();
+        return catchErrorOnCreate(error)
+    }
+
+}
 
 exports.createVerificationCode = async (newVerificationCodeData) => {
     let verificationCode = await CustomerLoginVerification

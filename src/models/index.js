@@ -5,7 +5,6 @@ const Customer = require("./customer.model");
 const CustomerLoginVerification = require("./customerLoginVerification");
 const Picker = require("./picker.model");
 const Reservation = require("./reservation.model");
-const ReservationAdditionalService = require("./reservationAdditionalService.model");
 const ReservationStatus = require("./reservationStatus.model");
 const Service = require("./service.model");
 const ServiceDiscount = require("./serviceDiscount.model");
@@ -13,6 +12,13 @@ const WorkDay = require("./workDay")
 const WorkHour = require("./workHour")
 const City = require("./city.model");
 const ReservationCompletion = require("./reservationCompletion.model");
+const Staff = require("./staff.model");
+const Balance = require("./balance.model");
+const Points = require("./points.model");
+const BalanceTransaction = require("./balanceTransaction.model");
+const Gift = require("./gifts.model");
+const ReservationService = require("./reservationService.model");
+
 // realtion between customer and loginverifcations ==>> customerId in customer table
 Customer.hasOne(CustomerLoginVerification, { foreignKey: "customerId", onUpdate: "cascade", onDelete: "cascade" });
 CustomerLoginVerification.belongsTo(Customer);
@@ -43,18 +49,14 @@ Reservation.belongsTo(Car)
 Customer.hasMany(Reservation, { foreignKey: "customerId" })
 Reservation.belongsTo(Customer)
 
-// relation between reservation and service
-Service.hasMany(Reservation, { foreignKey: "serviceId" })
-Reservation.belongsTo(Service);
-
 // relation between service and discount
 Service.hasOne(ServiceDiscount, { foreignKey: "serviceId" })
 ServiceDiscount.belongsTo(Service)
 
 // relation between reservation and reservation_additional_service 
 // Reservation.hasMany(ReservationAdditionalService, { foreignKey: "reservationId"});
-Reservation.belongsToMany(Service, { through: ReservationAdditionalService });
-Service.belongsToMany(Reservation, { through: ReservationAdditionalService });
+Reservation.belongsToMany(Service, { through: ReservationService });
+Service.belongsToMany(Reservation, { through: ReservationService });
 
 Reservation.hasOne(ReservationCompletion, { foreignKey: "reservationId", as: 'images' })
 ReservationCompletion.belongsTo(Reservation, { foreignKey: "reservationId", as: "reservation" })
@@ -62,6 +64,21 @@ ReservationCompletion.belongsTo(Reservation, { foreignKey: "reservationId", as: 
 // realtion between reservationHour and ReservationDay 
 WorkDay.hasMany(WorkHour, { foreignKey: "workDayId", onDelete: 'cascade', hooks:true });
 WorkHour.belongsTo(WorkDay)
+ 
+// realtionship between balanceTransaction and both of staff and customer 
+Staff.hasMany(BalanceTransaction, { foreignKey: "staffId" });
+Customer.hasMany(BalanceTransaction, { foreignKey: "customerId" });
+
+// customer has one balance
+Customer.hasOne(Balance, { foreignKey: "customerId"})
+Balance.belongsTo(Customer);
+
+// customer has point
+Customer.hasOne(Points, { foreignKey: "customerId"})
+Points.belongsTo(Customer);
+
+Gift.belongsTo(Customer, { foreignKey: "senderId" })
+Gift.belongsTo(Customer, { foreignKey: "recieverId" })
 
 module.exports = {
     Admin, 
@@ -74,9 +91,14 @@ module.exports = {
     Picker,
     Service,
     ServiceDiscount,
-    ReservationAdditionalService,
+    ReservationService,
     WorkDay,
     WorkHour,
     City,
     ReservationCompletion,
+    Staff,
+    Balance,
+    Points,
+    BalanceTransaction,
+    Gift
 }

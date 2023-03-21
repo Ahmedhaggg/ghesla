@@ -1,6 +1,4 @@
-const { Admin } = require("../models");
-let FactoryService = require("./factory.service")
-exports.count = FactoryService.count(Admin);
-exports.create = FactoryService.create(Admin);
-exports.findOne = FactoryService.findOne(Admin);
-
+const { Staff } = require("../models");
+exports.count =  async () => await Staff.count({ where: { isAdmin: true }});
+exports.create = async (adminData) => await Staff.create({ ...adminData, isAdmin: true });
+exports.findOne = async (query) => await Staff.findOne({ ...query, isAdmin: true });;

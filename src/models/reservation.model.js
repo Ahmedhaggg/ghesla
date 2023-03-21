@@ -1,4 +1,5 @@
 const { DataTypes } = require("sequelize");
+const { BALANCE, POINTS } = require("../config/constants");
 let { db } = require("../config/database");
 
 let Reservation = db.define("reservations", {
@@ -14,11 +15,20 @@ let Reservation = db.define("reservations", {
     },
     amount: {
         type: DataTypes.DECIMAL(6, 2),
-        allowNull: false
+        allowNull: true
+    },
+    points: {
+        type: DataTypes.INTEGER,
+        allowNull: true
     },
     date: {
         type: DataTypes.DATE,
         allowNull: false
+    },
+    paymentMethod: {
+        type: DataTypes.ENUM,
+        allowNull: false,
+        values: [BALANCE, POINTS]
     }
 }, {
     timestamps: false

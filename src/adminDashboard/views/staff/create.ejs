@@ -1,0 +1,58 @@
+<%- include("../partials/header") %>
+<h4 class="mb-4 text-center">اضافة بايكر</h4>
+<form method="POST" action="/dashboard/staff" enctype="application/x-www-form-urlencoded">
+    <div class="mb-3">
+        <input type="text" class="form-control" placeholder="الاسم" name="name"
+            <% if (lastValues?.name) { %>
+                value="<%= lastValues.name %>"
+            <% } %>
+        >
+    </div>
+    <% const nameError = validationErrors.find(error => error.param === "name"); %>
+    <% if (nameError) { %>
+		<p class="alert alert-danger py-2"><%= nameError.msg %></p>
+    <% } %>
+
+    <div class="mb-3">
+        <input type="tel" class="form-control" placeholder="رقم الهاتف" name="phoneNumber"
+            <% if (lastValues?.phoneNumber) { %>
+                value="<%= lastValues.phoneNumber %>"
+            <% } %>
+        >
+    </div>
+    <% const phoneError = validationErrors.find(error => error.param === "phoneNumber"); %>
+    <% if (phoneError) { %>
+		<p class="alert alert-danger py-2"><%= phoneError.msg %></p>
+    <% } %>
+
+    <div class="mb-3">
+        <input type="password" class="form-control" placeholder="كلمة المرور" name="password"
+            <% if (lastValues?.password) { %>
+                value="<%= lastValues.password %>"
+            <% } %>
+        >
+    </div>
+    <% const passwordError = validationErrors.find(error => error.param === "password"); %>
+    <% if (passwordError) { %>
+		<p class="alert alert-danger py-2"><%= passwordError.msg %></p>
+    <% } %>
+
+    <div class="mb-3">
+        <input type="password" class="form-control" placeholder="تاكيد كلمة المرور" name="confirmPassword"
+            <% if (lastValues?.confirmPassword) { %>
+                value="<%= lastValues.confirmPassword %>"
+            <% } %>
+        >
+    </div>
+    <% const confirmError = validationErrors.find(error => error.param === "confirmPassword"); %>
+    <% if (confirmError) { %>
+		<p class="alert alert-danger py-2"><%= confirmError.msg %></p>
+    <% } %>
+
+    <div class="mb-3">
+        <button type="submit" class="btn btn-primary">إرسال</button>
+    </div>
+
+</form>
+
+<%- include("../partials/footer") %>

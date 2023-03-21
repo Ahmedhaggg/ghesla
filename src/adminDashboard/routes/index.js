@@ -7,7 +7,9 @@ let cityRoutes = require("./city.admin.router");
 let reservationRoutes = require("./reservation.admin.router");
 let customerRoutes = require("./customer.admin.router");
 let workDayRoutes = require("./workDay.admin.router");
- 
+let staffRoutes = require("./staff.admin.router");
+
+  
 exports.adminRoutes = app => {
     app.use("/dashboard", indexRoutes)
     app.use("/dashboard", authRoutes);
@@ -18,7 +20,8 @@ exports.adminRoutes = app => {
     app.use("/dashboard/reservations", reservationRoutes);
     app.use("/dashboard/cities", cityRoutes);
     app.use("/dashboard/work-days", workDayRoutes);
-    
+    app.use("/dashboard/staff", staffRoutes);
+
     app.get("/dashboard/505", (req, res, next) => {
         res.render("505", {
             title: "خطا في السرفر"

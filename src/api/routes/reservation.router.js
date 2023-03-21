@@ -18,6 +18,11 @@ router
         reservationController.create
     )
 
+router.get("/picker",
+    guards.apiGuards("picker"),
+    reservationController.findPickerReservations
+);
+
 router
     .route("/:id")
     .get( 
@@ -31,9 +36,4 @@ router
         checkValidationError,
         reservationController.update
     )
-
-router.get("/pickers/:id",
-    guards.apiGuards("picker"),
-    reservationController.findPickerReservations
-)
 module.exports = router;

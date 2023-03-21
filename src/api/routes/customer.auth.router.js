@@ -1,7 +1,8 @@
 let router = require("express").Router();
 let customerAuthValidation = require("../../validations/customer.validation");
-let customerAuthController = require("../controllers/customerLogin.controller");
+let customerAuthController = require("../controllers/customerAuth.controller");
 let checkValidationError  = require("../../middlewares/checkValidationError");
+let guards = require("../../middlewares/guards")
 const { authRateLimiting } = require("../../config/rateLimiting");
 
 router.post("/login",
@@ -25,4 +26,8 @@ router.post("/register",
     customerAuthController.register
 );
 
+router.get("/profile",
+    guards.apiGuards("customer"),
+    customerAuthController.profile
+)
 module.exports = router;

@@ -11,22 +11,37 @@
                 </li>
                 <li class="list-group-item">
                     <div class="row">
-                        <div class="col">المبلغ</div>
-                        <div class="col"><%= reservation.dataValues.amount %></div>
+                        <div class="col">وسيلة الدفع</div>
+                        <div class="col"><%= reservation.dataValues.paymentMethod  %></div>
                     </div>
                 </li>
-                <li class="list-group-item">
-                    <div class="row">
-                        <div class="col">المبلغ بدون ضريبة</div>
-                        <div class="col"><%= ((reservation.dataValues.amount) - (reservation.dataValues.amount * 0.15)).toFixed(2)  %></div>
-                    </div>
-                </li>
-                <li class="list-group-item">
-                    <div class="row">
-                        <div class="col">الضريبة</div>
-                        <div class="col"><%= (reservation.dataValues.amount * 0.15).toFixed(2) %></div>
-                    </div>
-                </li>
+                <% if (reservation.dataValues.paymentMethod === "رصيد") { %>
+                    <li class="list-group-item">
+                        <div class="row">
+                            <div class="col">المبلغ</div>
+                            <div class="col"><%= reservation.dataValues.amount %></div>
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <div class="row">
+                            <div class="col">المبلغ بدون ضريبة</div>
+                            <div class="col"><%= ((reservation.dataValues.amount) - (reservation.dataValues.amount * 0.15)).toFixed(2)  %></div>
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <div class="row">
+                            <div class="col">الضريبة</div>
+                            <div class="col"><%= (reservation.dataValues.amount * 0.15).toFixed(2) %></div>
+                        </div>
+                    </li>
+                <% } else { %>
+                    <li class="list-group-item">
+                        <div class="row">
+                            <div class="col">النقاط</div>
+                            <div class="col"><%= reservation.dataValues.points %></div>
+                        </div>
+                    </li>
+                <% } %>
                 <li class="list-group-item">
                     <div class="row">
                         <div class="col">يوم الحجز</div>
@@ -86,6 +101,31 @@
                     </li>
                 <% } %>
             </ul>
+        </div>
+        <div class="mt-3">
+            <p class="text-center fs-2">الخدمات</p>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">رقم الخدمة</th>
+                            <th scope="col">الاسم</th>
+                            <th scope="col">النوع</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% reservation.services.forEach((service) => { %>
+                            <tr>
+                                <td class="py-3">
+                                    <a href="/dashboard/services/<%= service.id %>" class="text-decoration-none text-primary"><%= service.id %></a>
+                                </td>
+                                <td class="py-3"><%= service.dataValues.name %></td>
+                                <td class="py-3"><%= service.dataValues.isAdditional ? "خدمة اضافية" :  "خدمة اساسية" %></td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
         </div>
         <div>
             <% if(reservation.status.dataValues.name === "في الانتظار") { %>

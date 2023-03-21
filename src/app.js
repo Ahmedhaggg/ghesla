@@ -9,18 +9,19 @@ const { adminRoutes } = require("./adminDashboard/routes");
 const cookieParser = require("cookie-parser");
 const session = require("cookie-session");
 let flash = require("connect-flash");
+// let hpp = require("hpp")
 // const { dashboardLimiter, apiLimiter } = require("./config/rateLimiting");
 let app = express();
-
 
 // app.use("/dashboard", dashboardLimiter)
 // app.use("/api", apiLimiter)
 
-app.use(express.urlencoded({ extended: true }))
-app.use(express.json())
+app.use(express.urlencoded({ extended: true, limit: "40kb" }))
+app.use(express.json({ limit: "60kb" }))
 app.use(methodOverride("_method"))
 app.use(cors());
 
+// app.use(hpp())
 // use flash
 app.set('trust proxy', 1)
 app.use(cookieParser())

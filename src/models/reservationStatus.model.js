@@ -4,7 +4,6 @@ let { db }  = require("../config/database");
 let ReservationStatus = db.define("reservation_status", {
     id: {
         type: DataTypes.INTEGER,
-        autoIncrement: true,
         primaryKey: true,
         allowNull: false
     },

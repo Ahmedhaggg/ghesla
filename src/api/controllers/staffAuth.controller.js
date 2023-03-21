@@ -1,4 +1,4 @@
-let pickerService = require("../../services/picker.service");
+let staffService = require("../../services/staff.service");
 let expressAsyncHandler = require("express-async-handler");
 const APIError = require("../error/api.error");
 const errorsTypes = require("../error/errors.types");
@@ -9,37 +9,37 @@ let hashing = require("../../utils/hashing");
 
 exports.login =  expressAsyncHandler(
     async (req, res, next) => {
-        let { email, password } = req.body;
-        let picker = await pickerService.findLoginData({ email });
+        let { phoneNumber, password } = req.body;
+        let staff = await staffService.findOne({ phoneNumber, isAdmin: false });
        
-        if (!picker) 
+        if (!staff) 
             throw new APIError(
                 errorsTypes.BAD_REQUEST, 
                 HttpStatusCode.BAD_REQUEST, 
-                errorsMessages.emailIsNotUsed
+                errorsMessages.invalidLogindata
             )
         
         
-        let isIncorrectPassword = await hashing.compare(password, picker.dataValues.password);
+        let isIncorrectPassword = await hashing.compare(password, staff.dataValues.password);
 
         if (!isIncorrectPassword) 
             throw new APIError(
                 errorsTypes.BAD_REQUEST, 
                 HttpStatusCode.BAD_REQUEST, 
-                errorsMessages.passwordIsIncorrect
+                errorsMessages.invalidLogindata
             )
 
-        delete picker.dataValues.password;
+        delete staff.dataValues.password;
         
         let newAccessToken = await createJwtToken({
-            role: "picker",
-            pickerId:  picker.dataValues.id
+            role: "staff",
+            staffId:  staff.id
         });
         
         res.status(HttpStatusCode.OK).json({
             success: true, 
             newAccessToken,
-            picker
+            staff
         })
     }
 )

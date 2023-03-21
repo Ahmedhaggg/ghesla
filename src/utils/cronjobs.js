@@ -27,5 +27,7 @@ cron.schedule("0 0 * * *", async () => {
 
         let dayWorkTimes = getNextDayWorkTimes(day.dataValues.date);
         await workTime.saveNewDay(dayWorkTimes);
-    } catch (_) {}
+    } catch (error) {
+        console.log(error)
+    }
 })

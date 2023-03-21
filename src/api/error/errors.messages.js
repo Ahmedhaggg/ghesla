@@ -7,5 +7,12 @@ module.exports = {
     notAvailableHourWork: "لا يوجد بايكرز متاحين في هذه الساعة , يمكنك اختيار ساعة اخري",
     phoneNumberNotUsed: "رقم الهاتف غير مستخدم",
     passwordIsIncorrect: 'كلمة مرور خاطئة',
-    emailIsNotUsed: "الايميل المستخدم غير صحيح"
+    emailIsNotUsed: "الايميل المستخدم غير صحيح",
+    incorrectCustomerPhoneNumber: "رقم هاتف غير صحيح لا يوجد ذبون مسجل بهذا الرقم",
+    invalidLogindata: "البريد الالكتروني او كلمة المرور غير صحيحة",
+    balanceIsNotSufficient: "رصيدك غير كافي",
+    pointsIsNotEnough: "نقاطك غير كافية لاتمام الحجز",
+    invalidPaymentMethod: "يجب اختيار وسيلة دفع صحيحة",
+    invalidPaymentMethod: "يجب اختيار طريقة دفع صحيحة",
+    failedDelete: "حدث خطا في حذف الرسالة حاول مرة اخري"
 }

@@ -1,0 +1,29 @@
+<%- include("../partials/header") %>
+<h3 class="text-center mt-5 mb-3">هيئة العمل</h3>
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr> 
+                <th scope="col">الرقم</th>
+                <th scope="col">الاسم</th>
+                <th scope="col">رقم الهاتف</th>
+            </tr>
+        </thead>
+        <tbody>
+        <% staff.forEach(function(staff, index) { %>
+            <tr>
+                <td class="py-3"><%= index + 1 %></td>
+                <td class="py-3"><%= staff.dataValues.name %></td>
+                <td class="py-3"><%= staff.dataValues.phoneNumber %></td>
+            </tr>
+        <% }); %>
+    </tbody>
+</table>
+<% if (staff.length === 0) { %>
+    <p class="alert alert-info">لا يوجد عمال</p>        
+<% } %>
+</div>
+<div class="text-center mt-3">
+    <a class="btn btn-primary" href="/dashboard/staff/create">اضافة عامل جديد</a>
+</div>
+<%- include("../partials/footer") %>

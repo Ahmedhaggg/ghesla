@@ -12,3 +12,16 @@ exports.catchErrorOnCreate = async error => {
         throw new Error()
     
 }
+
+exports.catchIncrementError = error => {
+    if (error.original.code === 'ER_DATA_OUT_OF_RANGE') 
+        return {
+            success: false,
+            errorType: "valueIsOutOfRange"
+        }
+    else 
+        return {
+            success: false,
+            errorType: "serverError"
+        }
+}

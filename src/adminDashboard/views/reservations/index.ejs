@@ -19,8 +19,6 @@
         <th scope="col">المبلغ</th>
         <th scope="col">التاريخ</th>
         <th scope="col">المكان</th>
-        <th scope="col">اسم الزبون</th>
-        <th scope="col">رقم هاتف الزبون</th>
         <th scope="col">الخدمة الاساسية</th>
         <th scope="col">الحالة</th>
       </tr>
@@ -31,14 +29,12 @@
         <td class="py-3">
           <a href="/dashboard/reservations/<%= reservation.dataValues.id %>" class="text-decoration-none text-primary"><%= reservation.dataValues.id %></a>
         </td>
-        <td class="py-3"><%= reservation.dataValues.amount %></td>
+        <td class="py-3"><%= reservation.dataValues.paymentMethod == "رصيد" ? `${reservation.dataValues.amount} ريال` : `${reservation.dataValues.points} نقطة`%></td>
         <td class="py-3"><%= new Date(reservation.dataValues.date).toLocaleDateString("ar-EG") %></td>
         <td class="py-3"><%= reservation.dataValues.location %></td>
         <td>
-          <a href="/dashboard/customers/<%= reservation.customer.dataValues.id %>" class="text-decoration-none text-primary"><%= reservation.customer.dataValues.name %></a>
+          <a href="/dashboard/services/<%= reservation.services[0].dataValues.id %>" class="text-decoration-none text-primary"><%= reservation.services[0].dataValues.name %></a>
         </td>
-        <td class="py-3"><%= reservation.customer.dataValues.phoneNumber %></td>
-        <td class="py-3"><%= reservation.service.dataValues.name %></td>
         <td class="py-3"><%= reservation.status.dataValues.name %></td>
       </tr>
       <% }); %>

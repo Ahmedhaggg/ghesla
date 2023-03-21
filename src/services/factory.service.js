@@ -8,9 +8,9 @@ exports.updateOne = Model => async (id, newData) => {
 }
 
 exports.deleteOne = Model => async (id) => {
-    let updatedItem = await Model.destroy({ where: { id } });
+    let isDeleted = await Model.destroy({ where: { id } });
     
-    return updatedItem[0] === 1 ? true : false;
+    return isDeleted ? true : false;
 }
 
 exports.create = Model => async (newData) =>  {
