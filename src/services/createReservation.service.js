@@ -115,10 +115,10 @@ const createReservation = async (reservationData, workHourDate, transaction) => 
     } 
 }
   
-const createReservationServices = async (reservationServices, reservationId, transaction) => {
+const createReservationServices = async (reservationServicesIds, reservationId, transaction) => {
     try {
-        const newReservationServices = await ReservationService.bulkCreate(reservationServices.map(reservationService => ({
-            ...reservationService, 
+        const newReservationServices = await ReservationService.bulkCreate(reservationServicesIds.map(reservationServiceId => ({
+            serviceId: reservationServiceId, 
             reservationId: reservationId
         })), { transaction });
     
