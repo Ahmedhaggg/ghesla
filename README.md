@@ -18,11 +18,15 @@ Customers can request the bikers service to clean their car in place by register
 * aws s3 bucket
 
 ## Installation
-  1- clone the repo
+  1- clone the repo.
+
   2- Install docker and docker-compose
+
   3- run start command : 
-  docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d
+  ```cmd docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d ```
+
   4- serve http://localhost:4500 and create database picker_service
+
   5- after create database 
   run the start command again.
   
