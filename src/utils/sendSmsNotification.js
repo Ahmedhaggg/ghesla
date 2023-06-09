@@ -1,4 +1,4 @@
-const { APPLICATION_NAME, INFOBIP_API_KEY, INFOBIP_API_URL } = require("../config")
+const { INFOBIP_API_KEY, INFOBIP_API_URL } = require("../config")
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 
 exports.sendSmsLoginVerificationCode = async (verificationCode, to) => {
@@ -12,7 +12,7 @@ exports.sendSmsLoginVerificationCode = async (verificationCode, to) => {
                             to: ` 2${to}`
                         }
                     ],
-                    from: APPLICATION_NAME,
+                    from: "ghesla",
                     text: `verification code: ${verificationCode}`
                 }
             ]
